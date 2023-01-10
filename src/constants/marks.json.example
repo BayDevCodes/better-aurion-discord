@@ -1,0 +1,78 @@
+{
+    "names": {
+        "units": {
+            "unitId": "unitName",
+            "unitId": "unitName",
+            "...": "..."
+        },
+        "courses": {
+            "courseId": "courseName",
+            "courseId": "courseName",
+            "...": "..."
+        },
+        "types": {
+            "typeId": "typeName",
+            "typeId": "typeName",
+            "...": "..."
+        }
+    },
+    "colors": {
+        "unitId": {
+            "unitColor": "hexaColor",
+            "courseColors": [
+                "hexaColor",
+                "hexaColor",
+                "..."
+            ]
+        },
+        "unitId": {
+            "unitColor": "hexaColor",
+            "courseColors": [
+                "hexaColor",
+                "hexaColor",
+                "..."
+            ]
+        },
+        "...": {...},
+        "types": [
+            "hexaColor",
+            "hexaColor",
+            "..."
+        ]
+    },
+    "weights": {
+        "unitId": {
+            "ECTS": unitWeight,
+            "courseId": {
+                "typeId": typeWeight,
+                "typeId": typeWeight,
+                "...": ...,
+                "self": courseWeight
+            },
+            "courseId": {
+                "typeId": typeWeight,
+                "type2Id": typeWeight,
+                "...": ...,
+                "self": courseWeight
+            },
+            "...": {...}
+        },
+        "unitId": {
+            "ECTS": unitWeight,
+            "courseId": {
+                "typeId": typeWeight,
+                "typeId": typeWeight,
+                "...": ...,
+                "self": courseWeight
+            },
+            "courseId": {
+                "typeId": typeWeight,
+                "typeId": typeWeight,
+                "...": ...,
+                "self": courseWeight
+            },
+            "...": {...}
+        },
+        "...": {...}
+    }
+}

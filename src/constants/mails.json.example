@@ -1,0 +1,9 @@
+{
+    "domain": "<domain after the '@'>",
+
+    "students": [
+        "<first.family1>",
+        "<first.family2>",
+        "..."
+    ]
+}

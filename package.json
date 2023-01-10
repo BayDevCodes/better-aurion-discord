@@ -1,0 +1,22 @@
+{
+  "name": "better-aurion",
+  "version": "1.0.0",
+  "description": "A Discord bot that can do pretty much anything Aurion can't 🤭",
+  "license": "MIT",
+  "author": "BayDev <baydev.contact@gmail.com> (https://github.com/BayDevCodes)",
+  "main": "src/index.js",
+  "scripts": {
+    "deploy": "node src/util/deploy.js",
+    "start": "node ."
+  },
+  "dependencies": {
+    "better-sqlite3": "^8.0.1",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "quick.db": "^9.0.8",
+    "quickchart-js": "^3.1.1"
+  },
+  "engines": {
+    "node": ">= 16.9.0"
+  }
+}
