@@ -69,7 +69,7 @@ module.exports = {
                 .setColor('Blurple')
                 .setTitle('Classement par moyenne générale')
                 .setDescription(description)
-                .setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant ajouté toutes leurs notes)` });
+                .setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
 
             /** @type {SelectMenuBuilder} */
             const unitSelectMenu = interaction.client.components.get('chooseUnit').data;

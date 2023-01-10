@@ -51,7 +51,7 @@ module.exports = {
                     }
 
                     courseSelectMenu.setPlaceholder('Voir le classement par moyenne d\'un cours');
-                    embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant ajouté toutes leurs notes)` });
+                    embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
                 break;
 
                 case 'Coefficients':
@@ -122,7 +122,7 @@ module.exports = {
 
                 unitSelectMenu.setPlaceholder('Voir le classement par moyenne d\'une unité');
                 embed.setTitle('Classement par moyenne générale').setDescription(description)
-                    .setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant ajouté toutes leurs notes)` });
+                    .setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
             break;
 
             case 'Coefficients':

@@ -43,7 +43,7 @@ module.exports = {
                     description += `**${i + 1}** - **${student.value.anonymous ? '🕵️ Anonyme' : `[${nameFromEmail(student.value.email)}](https://discordapp.com/users/${student.id})`}** avec \`${student.value.averages[unitId][courseId].self}\`\n`;
                 }
 
-                embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant ajouté toutes leurs notes)` });
+                embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
             break;
 
             case 'Coefficients':
