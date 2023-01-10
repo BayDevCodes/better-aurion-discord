@@ -11,11 +11,11 @@ module.exports = {
         .setDescription('Voir les classements de la promo par moyennes/note.')
         .addSubcommand(subCommand => subCommand
             .setName('moyennes')
-            .setDescription('Voir le classement de la promo par moyennes (étudiant·e·s ayant ajouté toutes leurs notes uniquement).')
+            .setDescription('Voir le classement de la promo par moyennes (étudiant·e·s ayant saisi toutes les notes uniquement).')
         )
         .addSubcommand(subCommand => subCommand
             .setName('note')
-            .setDescription('Voir le classement de la promo pour une note (étudiant·e·s ayant ajouté cette note uniquement).')
+            .setDescription('Voir le classement de la promo pour une note (étudiant·e·s ayant saisi cette note uniquement).')
             .addStringOption(option => option
                 .setName('identifiant')
                 .setDescription('L\'identifiant de la note (exemple: MATH_M1_CC_1).')

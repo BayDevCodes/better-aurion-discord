@@ -9,7 +9,7 @@ const marks = require('../constants/marks.json'); // Constants regarding the mar
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('moyennes')
-        .setDescription('Calculer tes moyennes par unité ou par matière.'),
+        .setDescription('Voir ta moyenne générale et le détail par unité, cours et type de note.'),
     
     /** @param {ChatInputCommandInteraction} interaction */
     async execute(interaction) {
