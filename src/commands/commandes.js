@@ -1,5 +1,5 @@
 // Third-party module
-const { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } = require('discord.js'); // Elements from the discord.js library
+const { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder, User } = require('discord.js'); // Elements from the discord.js library
 
 const { commandMention } = require('../util/functions'); // Local function
 const { Main } = require('../util/tables'); // Database table
