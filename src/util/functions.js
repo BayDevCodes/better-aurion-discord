@@ -154,11 +154,11 @@ function calculateAverages(markList) {
     /**
      * @type {{
      *  general: Number
-     *  (unitId: String): {
+     *  [unitId: String]: {
      *      self: Number
-     *      (courseId: String): {
+     *      [courseId: String]: {
      *          self: Number
-     *          (typeId: String): Number
+     *          [typeId: String]: Number
      *      }
      *  }
      * }}
@@ -277,9 +277,9 @@ function nameFromEmail(email) {
 /**
  * Calculates the minimum mark needed to get/keep an goal in a unit (can be negative if the student is a chad).
  * @param {{ averages: {
- *  (unitId: String): {
- *      (courseId: String): {
- *          (typeId: String): Number,
+ *  [unitId: String]: {
+ *      [courseId: String]: {
+ *          [typeId: String]: Number,
  *          self: Number
  *      },
  *      self: Number
