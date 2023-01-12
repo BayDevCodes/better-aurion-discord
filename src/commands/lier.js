@@ -1,7 +1,7 @@
 // Third-party module
 const { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } = require('discord.js'); // Elements from the discord.js library
 
-const { commandMention, initStudent, refereeLink } = require('../util/functions'); // Local functions
+const { commandMention, initStudent } = require('../util/functions'); // Local functions
 const { Promotion } = require('../util/tables'); // Database table
 const mails = require('../constants/mails.json'); // Constants regarding the students' mail adresses defined at setup
 
@@ -23,7 +23,7 @@ module.exports = {
             const unknownEmbed = new EmbedBuilder()
                 .setTitle('Adresse mail invalide')
                 .setColor('Red')
-                .setDescription(`L'adresse \`${email.join('@')}\` n'est pas enregistrée...\n***Si** c'est une erreur, contacte [le·la référent·e](${await refereeLink(interaction.client)})*`);
+                .setDescription(`L'adresse \`${email.join('@')}\` n'est pas enregistrée...\n***Si** c'est une erreur, utilise* ${commandMention(interaction.client, 'aled')}`);
 
             return await interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
         };
@@ -33,7 +33,7 @@ module.exports = {
             const alreadyLinkedEmbed = new EmbedBuilder()
                 .setTitle('Adresse mail déjà utilisée')
                 .setColor('Orange')
-                .setDescription(`L'adresse \`${email.join('@')}\` est déjà liée à [un compte](https://discordapp.com/users/${student.id})\n***Si** ce n'est pas toi, contacte [le·la référent·e](${await refereeLink(interaction.client)})*`);
+                .setDescription(`L'adresse \`${email.join('@')}\` est déjà liée à [un compte](https://discordapp.com/users/${student.id})\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`);
 
             return await interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
         }

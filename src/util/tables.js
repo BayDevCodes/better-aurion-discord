@@ -57,7 +57,7 @@ module.exports = {
      * interactionCount: `number` *The total number of interactions with the bot.*  
      * promotionAverages: `object` *The promotion averages object (same as students').*  
      * promotionAveragesUpdate: `number` *When promotion averages will be updated.*  
-     * referee: `string` *The referee's Discord user id.*
+     * referees: `string[]` *The referees' Discord user ids.*
      */
     Main: db
 };

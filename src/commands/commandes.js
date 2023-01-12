@@ -22,7 +22,7 @@ module.exports = {
             /** @type {SlashCommandBuilder} */
             const builder = command[1].data;
             if (builder.name === 'dev' && interaction.user.id !== ownerId) continue; // Show the "dev" command to the appplication manager only
-            if (builder.name === 'ref' && interaction.user.id !== await Main.get('referee')) continue; // Show the "ref" command to the referee only
+            if (builder.name === 'ref' && !(await Main.get('referees'))?.some(r => r === interaction.user.id)) continue; // Show the "ref" command to the referees only
 
             const subCommands = builder.options.filter(o => o.options);
             if (!subCommands.length) helpEmbed.data.description += `${commandMention(interaction.client, builder.name)} *${builder.description}*\n`;

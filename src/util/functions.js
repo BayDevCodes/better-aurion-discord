@@ -334,14 +334,6 @@ function predictMark(student, goal, unitId, courseId, typeId) {
     return Math.round((typeGoal * (marksToAccount.length + 1) - markSum) * 100) / 100; // Calculate the expected mark and return it
 }
 
-/** Gets the promotion's referee and returns a link to their profile. */
-async function refereeLink() {
-    const refereeId = await Main.get('referee'); // Get the referee's id
-    return refereeId
-        ? `https://discordapp.com/users/${await Main.get('referee')}` // If a referee is set, return a link to their profile
-        : 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // If not, you know
-}
-
 /**
  * Starts the bot instance, loads commands & events to it and connects it to Discord and the database.
  * @param {Client} client discord.js client
@@ -481,7 +473,6 @@ module.exports = {
     initStudent,
     nameFromEmail,
     predictMark,
-    refereeLink,
     start,
     weightsChart
 };

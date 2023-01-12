@@ -9,11 +9,20 @@ module.exports = {
         .setName('dev')
         .setDescription('Commandes utilisables uniquement par le développeur.')
         .addSubcommand(subcommand => subcommand
-            .setName('référent')
-            .setDescription('⚠️ Définir le·la référent·e de cette instance de Better Aurion.')
+            .setName('promouvoir')
+            .setDescription('⚠️ Ajouter un·e référent·e pour cette instance de Better Aurion.')
             .addUserOption(option => option
                 .setName('utilisateur')
-                .setDescription('L\'utilisateur à définir comme référent·e (s\'il·elle n\'apparaît pas dans la liste, utilise son ID).')
+                .setDescription('L\'étudiant·e à promouvoir (s\'il·elle n\'apparaît pas dans la liste, utilise son ID).')
+                .setRequired(true)
+            )
+        )
+        .addSubcommand(subcommand => subcommand
+            .setName('reléguer')
+            .setDescription('⚠️ Retirer un·e des référent·e·s de cette instance de Better Aurion.')
+            .addUserOption(option => option
+                .setName('utilisateur')
+                .setDescription('L\'étudiant·e à reléguer (s\'il·elle n\'apparaît pas dans la liste, utilise son ID).')
                 .setRequired(true)
             )
         ),
@@ -34,12 +43,42 @@ module.exports = {
         }
 
         const user = interaction.options.getUser('utilisateur');
-        const refereeEmbed = new EmbedBuilder()
+        const referee = (await Main.get('referees'))?.find(r => r === user.id);
+
+        if (interaction.options.getSubcommand() === 'promouvoir') {
+            if (referee) {
+                const alreadyRefereeEmbed = new EmbedBuilder()
+                    .setTitle('Déjà promu·e')
+                    .setColor('Orange')
+                    .setDescription(`*L'utilisateur* **${user.tag}** *est déjà référent·e de cette instance*`);
+
+                return interaction.reply({ embeds: [alreadyRefereeEmbed], ephemeral: true });
+            }
+
+            const newRefereeEmbed = new EmbedBuilder()
+                .setColor('Green')
+                .setTitle('Référent·e ajouté·e')
+                .setDescription(`*L'utilisateur* **${user.tag}** *est désormais référent·e de cette instance*`);
+            
+            Main.push('referees', user.id);
+            return interaction.reply({ embeds: [newRefereeEmbed], ephemeral: true });
+        }
+
+        if (!referee) {
+            const notRefereeEmbed = new EmbedBuilder()
+                .setTitle('Référent·e introuvable')
+                .setColor('Orange')
+                .setDescription(`*L'utilisateur* **${user.tag}** *n'est pas référent·e de cette instance*`);
+            
+            return interaction.reply({ embeds: [notRefereeEmbed], ephemeral: true });
+        }
+
+        const removedRefereeEmbed = new EmbedBuilder()
             .setColor('Green')
-            .setTitle('Référent·e défini')
-            .setDescription(`*L'utilisateur* **${user.tag}** *est désormais référent·e de cette instance*`);
+            .setTitle('Référent·e retiré·e')
+            .setDescription(`*L'utilisateur* **${user.tag}** *n'est plus référent·e de cette instance*`);
         
-        Main.set('referee', user.id);
-        interaction.reply({ embeds: [refereeEmbed], ephemeral: true });
+        Main.pull('referees', user.id);
+        interaction.reply({ embeds: [removedRefereeEmbed], ephemeral: true });
     }
 };

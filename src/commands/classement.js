@@ -1,7 +1,7 @@
 // Third-party module
 const { ChatInputCommandInteraction, EmbedBuilder, SelectMenuBuilder, SlashCommandBuilder, ActionRowBuilder } = require('discord.js'); // Elements from the discord.js library
 
-const { commandMention, nameFromEmail, refereeLink } = require('../util/functions'); // Local functions
+const { commandMention, nameFromEmail } = require('../util/functions'); // Local functions
 const { Marks, Promotion } = require('../util/tables'); // Database tables
 
 // Export the command's data & execute function
@@ -84,7 +84,7 @@ module.exports = {
             const unknownEmbed = new EmbedBuilder()
                 .setTitle('Note inconnue')
                 .setColor('Red')
-                .setDescription(`L'identifiant \`${markId}\` ne correspond à aucune note publiée.\n***Si** c'est pourtant le cas, contacte [le·la référent·e](${await refereeLink(interaction.client)})*`);
+                .setDescription(`L'identifiant \`${markId}\` ne correspond à aucune note publiée.\n***Si** c'est pourtant le cas, utilise* ${commandMention(interaction.client, 'aled')}`);
 
             return interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
         }

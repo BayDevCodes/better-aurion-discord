@@ -64,7 +64,7 @@ module.exports = {
 
     /** @param {ChatInputCommandInteraction} interaction */
     async execute(interaction) {
-        if (interaction.user.id !== await Main.get('referee')) { // This command is restricted to the referee who is responsible of accounts & marks
+        if (!(await Main.get('referees'))?.some(r => r === interaction.user.id)) { // This command is restricted to the referees who are responsible of accounts & marks
             const restrictedEmbed = new EmbedBuilder()
                 .setTitle('Commande restreinte')
                 .setColor('Red')
