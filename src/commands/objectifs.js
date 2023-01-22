@@ -56,7 +56,7 @@ module.exports = {
             .setColor('Blurple')
             .setDescription(description);
 
-        Promotion.set(`${interaction.user.id}.goals`, newGoals); // Replace the student's goals object with the new one
         interaction.reply({ embeds: [successEmbed], ephemeral: true });
+        Promotion.set(`${interaction.user.id}.goals`, newGoals); // Replace the student's goals object with the new one
     }
 };

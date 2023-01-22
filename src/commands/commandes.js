@@ -25,8 +25,10 @@ module.exports = {
             if (builder.name === 'ref' && !(await Main.get('referees'))?.some(r => r === interaction.user.id)) continue; // Show the "ref" command to the referees only
 
             const subCommands = builder.options.filter(o => o.options);
-            if (!subCommands.length) helpEmbed.data.description += `${commandMention(interaction.client, builder.name)} *${builder.description}*\n`;
-            else subCommands.forEach(s => helpEmbed.data.description += `${commandMention(interaction.client, `${builder.name} ${s.name}`)} *${s.description}*\n`);
+            if (!subCommands.length)
+                helpEmbed.data.description += `${commandMention(interaction.client, builder.name)} *${builder.description}*\n`;
+            else
+                subCommands.forEach(s => helpEmbed.data.description += `${commandMention(interaction.client, `${builder.name} ${s.name}`)} *${s.description}*\n`);
         }
 
         interaction.reply({ embeds: [helpEmbed], ephemeral: true });

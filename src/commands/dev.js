@@ -76,8 +76,8 @@ module.exports = {
                 .setTitle('Référent·e ajouté·e')
                 .setDescription(`*L'utilisateur* **${user.tag}** *est désormais référent·e de cette instance*`);
             
-            Main.push('referees', user.id);
-            return interaction.reply({ embeds: [newRefereeEmbed], ephemeral: true });
+            interaction.reply({ embeds: [newRefereeEmbed], ephemeral: true });
+            return Main.push('referees', user.id);
         }
 
         if (!referee) {
@@ -94,7 +94,7 @@ module.exports = {
             .setTitle('Référent·e retiré·e')
             .setDescription(`*L'utilisateur* **${user.tag}** *n'est plus référent·e de cette instance*`);
         
-        Main.pull('referees', user.id);
         interaction.reply({ embeds: [removedRefereeEmbed], ephemeral: true });
+        Main.pull('referees', user.id);
     }
 };

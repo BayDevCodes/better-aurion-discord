@@ -22,7 +22,8 @@ module.exports = {
             return interaction.reply({ embeds: [refereesEmbed], ephemeral: true });
         }
 
-        for (const referee of referees) refereesEmbed.data.description += `\n> <@${referee}> *[Mention cassée?](https://discordapp.com/users/${referee})*`;
+        for (const refereeId of referees)
+            refereesEmbed.data.description += `\n> <@${refereeId}> *[Mention cassée?](https://discordapp.com/users/${refereeId})*`;
         interaction.reply({ embeds: [refereesEmbed], ephemeral: true });
     }
 };

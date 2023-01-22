@@ -25,17 +25,17 @@ module.exports = {
                 .setColor('Red')
                 .setDescription(`L'adresse \`${email.join('@')}\` n'est pas enregistrée...\n***Si** c'est une erreur, utilise* ${commandMention(interaction.client, 'aled')}`);
 
-            return await interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
         };
 
-        const student = (await Promotion.all()).find(s => s.value.email === email.join('@')); // Get the student in the database if any
+        const student = (await Promotion.all()).find(s => s.value.email === email.join('@')); // Get the student in the database, if any
         if (student) {
             const alreadyLinkedEmbed = new EmbedBuilder()
                 .setTitle('Adresse mail déjà utilisée')
                 .setColor('Orange')
                 .setDescription(`L'adresse \`${email.join('@')}\` est déjà liée à [un compte](https://discordapp.com/users/${student.id})\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`);
 
-            return await interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
         }
 
         const successEmbed = new EmbedBuilder()
@@ -43,7 +43,7 @@ module.exports = {
             .setColor('Green')
             .setDescription(`L'adresse \`${email.join('@')}\` est liée à ton compte 👌\nTu peux désormais saisir tes notes, calculer tes moyennes et fixer tes objectifs!\n\n⚠️ Par défaut, ton nom apparaîtra dans les classements. Si tu veux y remédier, utilise ${commandMention(interaction.client, 'anonymat')}`);
 
-        initStudent(interaction.user.id, email.join('@')); // Create the student's row in the database
         interaction.reply({ embeds: [successEmbed], ephemeral: true });
+        initStudent(interaction.user.id, email.join('@')); // Create the student's row in the database
     }
 };

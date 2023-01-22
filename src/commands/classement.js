@@ -115,9 +115,8 @@ module.exports = {
         }
 
         let sum = 0;
-        for (const student of rankings) {
+        for (const student of rankings)
             sum += student.value.marks.find(m => m.id === markId).value;
-        }
 
         const rankingEmbed = new EmbedBuilder()
             .setColor('Blurple')
@@ -125,6 +124,6 @@ module.exports = {
             .setDescription(description)
             .setFooter({ text: `Moyenne de la promo: ${Math.round(sum / rankings.length * 100) / 100} (sur ${rankings.length} étudiant·e·s classé·e·s)` }); // Calculate the promotion's average for this mark
 
-        return interaction.reply({ embeds: [rankingEmbed], ephemeral: true });
+        interaction.reply({ embeds: [rankingEmbed], ephemeral: true });
     }
 };

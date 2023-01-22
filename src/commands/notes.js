@@ -108,7 +108,8 @@ module.exports = {
                     .setDescription(`Utilise ${commandMention(interaction.client, 'notes saisir')} pour ajouter les notes disponibles suivantes:\n${missingMarks.slice(0, 10).map(missingMark => `> \`${missingMark.id}\` *${missingMark.value}*`).join('\n')}`)
                     .setFooter({ text: 'Il faut avoir ajouté toutes ses notes pour appartenir au classement de la promo' });
 
-                if (missingMarks.length > 10) missingMarksEmbed.data.description += `\n> *Et ${missingMarks.length - 10} autre(s)...*`; // Prevent the embed from being too long
+                if (missingMarks.length > 10)
+                    missingMarksEmbed.data.description += `\n> *Et ${missingMarks.length - 10} autre(s)...*`; // Prevent the embed from being too long
                 return interaction.reply({ embeds: [missingMarksEmbed], ephemeral: true });
 
             case 'prévoir':
@@ -134,9 +135,12 @@ module.exports = {
                     .setColor('Blurple')
                     .setFooter({ text: `Identifiant: [${markId}]` });
 
-                if (predictedMark < 0) predictionEmbed.setDescription(`Bonne nouvelle, même avec un \`0\` à cette note,\nton objectif de \`${goal}\` est atteint!`);
-                if (predictedMark > 20) predictionEmbed.setDescription(`Mauvaise nouvelle, même avec un \`20\` à cette note,\nton objectif de \`${goal}\` n'est pas atteint...`);
-                if (!predictionEmbed.data.description) predictionEmbed.setDescription(`Pour atteindre ton objectif de \`${goal}\`, tu dois avoir au moins \`${predictedMark}\` à cette note.`);
+                if (predictedMark < 0)
+                    predictionEmbed.setDescription(`Bonne nouvelle, même avec un \`0\` à cette note,\nton objectif de \`${goal}\` est atteint!`);
+                if (predictedMark > 20)
+                    predictionEmbed.setDescription(`Mauvaise nouvelle, même avec un \`20\` à cette note,\nton objectif de \`${goal}\` n'est pas atteint...`);
+                if (!predictionEmbed.data.description)
+                    predictionEmbed.setDescription(`Pour atteindre ton objectif de \`${goal}\`, tu dois avoir au moins \`${predictedMark}\` à cette note.`);
 
                 predictionEmbed.data.description += `\n*Tu peux modifier ton objectif de moyenne avec* ${commandMention(interaction.client, 'objectifs')}`;
                 return interaction.reply({ embeds: [predictionEmbed], ephemeral: true });
@@ -174,7 +178,8 @@ module.exports = {
                     .setFooter({ text: `[${markIdInput}] ${publishedMark}` });
                 interaction.reply({ embeds: [successEmbed], ephemeral: true });
 
-                if (studentMark) await Promotion.pull(`${interaction.user.id}.marks`, (m) => m.id === markIdInput); // Remove the original mark if any
+                if (studentMark)
+                    await Promotion.pull(`${interaction.user.id}.marks`, (m) => m.id === markIdInput); // Remove the original mark if any
                 await Promotion.push(`${interaction.user.id}.marks`, { id: markIdInput, value: isNaN(roundedMark) ? -1 : roundedMark }); // Set the new mark
                 Promotion.set(`${interaction.user.id}.averages`, calculateAverages(await Promotion.get(`${interaction.user.id}.marks`))); // Update the averages object
         }

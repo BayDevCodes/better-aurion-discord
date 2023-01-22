@@ -33,7 +33,7 @@ module.exports = {
             .setColor('Blurple')
             .setDescription(`*Tu apparaîtras sur les classements tel·le*\n> **${anonymous ? '🕵️ Anonyme' : `[${nameFromEmail(student.email)}](https://discordapp.com/users/${interaction.user.id})`}**`);
 
-        Promotion.set(`${interaction.user.id}.anonymous`, anonymous);
         interaction.reply({ embeds: [successEmbed], ephemeral: true });
+        Promotion.set(`${interaction.user.id}.anonymous`, anonymous);
     }
 };

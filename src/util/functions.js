@@ -178,7 +178,8 @@ function calculateAverages(markList) {
                 const typeMarks = courseMarks.filter(m => m.id.split('_')[2] === typeId); // Remove marks that are not of the current type
 
                 let markSum = 0; // Initialize the sum of the marks
-                for (const mark of typeMarks) markSum += mark.value; // Add the current mark to the sum
+                for (const mark of typeMarks)
+                    markSum += mark.value; // Add the current mark to the sum
 
                 averages[unitId][courseId][typeId] = typeMarks.length ? Math.round(markSum / typeMarks.length * 100) / 100 : null; // Calculate the average of the current type
             }
@@ -186,7 +187,8 @@ function calculateAverages(markList) {
             let typeSum = 0, typeWeights = 0; // Initialize the sum and weights of the types
             for (const [type, average] of Object.entries(averages[unitId][courseId])) {
                 const weight = marks.weights[unitId][courseId][type]; // Get the weight of the current type
-                if (average !== null) typeSum += average * weight, typeWeights += weight; // Add the current type to the sum and weights
+                if (average !== null)
+                    typeSum += average * weight, typeWeights += weight; // Add the current type to the sum and weights
             }
 
             averages[unitId][courseId].self = typeWeights ? Math.round(typeSum / typeWeights * 100) / 100 : null; // Calculate the average of the current course
@@ -195,7 +197,8 @@ function calculateAverages(markList) {
         let courseSum = 0, courseWeights = 0; // Initialize the sum and weights of the courses
         for (const [course, average] of Object.entries(averages[unitId])) {
             const weight = marks.weights[unitId][course].self; // Get the weight of the current course
-            if (average.self !== null) courseSum += average.self * weight, courseWeights += weight; // Add the current course to the sum and weights
+            if (average.self !== null)
+                courseSum += average.self * weight, courseWeights += weight; // Add the current course to the sum and weights
         }
 
         averages[unitId].self = courseWeights ? Math.round(courseSum / courseWeights * 100) / 100 : null; // Calculate the average of the current unit
@@ -204,7 +207,8 @@ function calculateAverages(markList) {
     let unitSum = 0, unitWeights = 0; // Initialize the sum and weights of the units
     for (const [unit, average] of Object.entries(averages)) {
         const weight = marks.weights[unit].ECTS; // Get the weight of the current unit
-        if (average.self !== null) unitSum += average.self * weight, unitWeights += weight; // Add the current unit to the sum and weights
+        if (average.self !== null)
+            unitSum += average.self * weight, unitWeights += weight; // Add the current unit to the sum and weights
     }
 
     averages.general = unitWeights ? Math.round(unitSum / unitWeights * 100) / 100 : null; // Calculate the general average
@@ -216,7 +220,8 @@ function calculateAverages(markList) {
  * @param {String} optionId id of the option
  */
 function commandChoices(optionId) {
-    if (!marks.names[optionId]) throw new Error(`Invalid option ID: ${optionId}`); // Throw an error if the option id is invalid
+    if (!marks.names[optionId])
+        throw new Error(`Invalid option ID: ${optionId}`); // Throw an error if the option id is invalid
 
     return Object.entries(marks.names[optionId]).map(([id, name]) => { return { name: name, value: id } }); // Return the options formatted for the Discord API
 }
@@ -322,10 +327,12 @@ function predictMark(student, goal, unitId, courseId, typeId) {
     const typeGoal = (courseGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
     
     const marksToAccount = student.marks.filter(m => m.value >= 0 && m.id.startsWith(`${unitId}_${courseId}_${typeId}}`)); // Get the marks to account for the type average
-    if (!marksToAccount.length) return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
+    if (!marksToAccount.length)
+        return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
 
     let markSum = 0; // Initialize the sum of the marks
-    for (const mark of marksToAccount) markSum += mark.value; // Add the current mark to the sum
+    for (const mark of marksToAccount)
+        markSum += mark.value; // Add the current mark to the sum
     
     // The equation to find the expected mark is:
     // (markSum + ?) / markAmount = typeGoal
@@ -389,7 +396,8 @@ async function updatePromotionAverages() {
 
     const promotionMarks = []; // Initialize the array of marks
     const students = await Promotion.all(); // Get all the students of the promotion
-    for (const student of students) promotionMarks.push(...student.value.marks); // Add the marks of the current student to the array
+    for (const student of students)
+        promotionMarks.push(...student.value.marks); // Add the marks of the current student to the array
 
     Main.set('promotionAverages', calculateAverages(promotionMarks)); // Calculate and save the averages to the database
 }

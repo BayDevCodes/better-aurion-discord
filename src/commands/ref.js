@@ -93,8 +93,8 @@ module.exports = {
                 .setDescription(`L'adresse mail \`${student.email}\` est à présent disponible.`)
                 .setFooter({ text: 'Les données qui y étaient associées ont été supprimées' });
                 
-            Promotion.delete(user.id);
-            return interaction.reply({ embeds: [deletedEmbed], ephemeral: true });
+            interaction.reply({ embeds: [deletedEmbed], ephemeral: true });
+            return Promotion.delete(user.id);
         }
 
         if (subcommand === 'retirer') {
@@ -120,7 +120,7 @@ module.exports = {
             // Do this for every student in the database
             for (const student of await Promotion.all()) {
                 await Promotion.pull(`${student.id}.marks`, (m) => m.id === markId); // Remove the deleted mark
-                Promotion.set(`${student.id}.averages`, calculateAverages(await Promotion.get(`${student.id}.marks`))) // Update the averages object
+                Promotion.set(`${student.id}.averages`, calculateAverages(await Promotion.get(`${student.id}.marks`))); // Update the averages object
             }
             return Marks.delete(markId);
         }
@@ -158,7 +158,7 @@ module.exports = {
             .setDescription(`Cette note a été publiée avec succès`)
             .setFooter({ text: `[${markId}] ${markName}` });
 
-        Marks.set(markId, markName);
         interaction.reply({ embeds: [publishedEmbed], ephemeral: true });
+        Marks.set(markId, markName);
     }
 };
