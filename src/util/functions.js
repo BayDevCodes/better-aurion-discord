@@ -1,5 +1,6 @@
 // Third-party modules
 const { Client, Collection } = require('discord.js'); // Classes from the discord.js library
+const Gradient = require('javascript-color-gradient'); // Library to generate gradients
 const QuickChart = require('quickchart-js'); // Library to generate charts
 const { readdirSync } = require('fs'); // Function to read the content of a directory
 
@@ -237,6 +238,22 @@ function commandMention(client, command) {
 }
 
 /**
+ * Generates a gradient from a color (lighter to darker variation).
+ * @param {String} color color of the unit
+ * @param {Number} steps amount of courses
+ */
+function GenerateGradient(color, steps) {
+    const rgb = [];
+    for (let i = 0; i < 3; i++) // Convert the color to RGB
+        rgb.push(parseInt(color.slice(1 + 2*i, 3 + 2*i), 16));
+
+    const lightColor = `#${rgb.map(v => Math.min(0xFF, Math.round(v * 1.3)).toString(16)).join('')}`; // Slighly lighter variation of the color
+    const darkColor = `#${rgb.map(v => Math.min(0xFF, Math.round(v * 0.7)).toString(16)).join('')}`; // Slighly darker variation
+
+    return new Gradient().setColorGradient(lightColor, darkColor).setMidpoint(steps).getColors(); // Generate the gradient and return it
+}
+
+/**
  * Generates a mark's id & name from its components if they are valid.
  * @param {String} unitId id of the unit
  * @param {String} courseId id of the course
@@ -413,8 +430,8 @@ function weightsChart(unitId = null, courseId = null) {
     const colors = courseId
         ? marks.colors.types
         : unitId
-            ? marks.colors[unitId].courseColors
-            : Object.keys(marks.weights).map(unitId => marks.colors[unitId].unitColor);
+            ? GenerateGradient(marks.colors[unitId], Object.keys(marks.weights[unitId]).length - 1)
+            : Object.keys(marks.weights).map(unitId => marks.colors[unitId]);
 
     // Get the weights of types, courses or units
     const data = courseId
