@@ -242,7 +242,7 @@ function commandMention(client, command) {
  * @param {String} color color of the unit
  * @param {Number} steps amount of courses
  */
-function GenerateGradient(color, steps) {
+function generateGradient(color, steps) {
     const rgb = [];
     for (let i = 0; i < 3; i++) // Convert the color to RGB
         rgb.push(parseInt(color.slice(1 + 2*i, 3 + 2*i), 16));
@@ -430,7 +430,7 @@ function weightsChart(unitId = null, courseId = null) {
     const colors = courseId
         ? marks.colors.types
         : unitId
-            ? GenerateGradient(marks.colors[unitId], Object.keys(marks.weights[unitId]).length - 1)
+            ? generateGradient(marks.colors[unitId], Object.keys(marks.weights[unitId]).length - 1)
             : Object.keys(marks.weights).map(unitId => marks.colors[unitId]);
 
     // Get the weights of types, courses or units
