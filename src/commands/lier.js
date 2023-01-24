@@ -33,7 +33,9 @@ module.exports = {
             const alreadyLinkedEmbed = new EmbedBuilder()
                 .setTitle('Adresse mail déjà utilisée')
                 .setColor('Orange')
-                .setDescription(`L'adresse \`${email.join('@')}\` est déjà liée à [un compte](https://discordapp.com/users/${student.id})\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`);
+                .setDescription(student.id === interaction.user.id
+                    ? `L'adresse \`${email.join('@')}\` est déjà liée à ton compte 👌`
+                    : `L'adresse \`${email.join('@')}\` est déjà liée à [un compte](https://discordapp.com/users/${student.id})\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`);
 
             return interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
         }
