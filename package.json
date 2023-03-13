@@ -10,12 +10,12 @@
     "start": "node ."
   },
   "dependencies": {
-    "better-sqlite3": "^8.0.1",
-    "discord.js": "^14.7.1",
+    "better-sqlite3": "^8.2.0",
+    "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
     "javascript-color-gradient": "^2.4.4",
     "quick.db": "^9.0.8",
-    "quickchart-js": "^3.1.1"
+    "quickchart-js": "^3.1.2"
   },
   "engines": {
     "node": ">= 16.9.0"
