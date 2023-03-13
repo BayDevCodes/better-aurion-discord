@@ -44,8 +44,13 @@ module.exports = {
             .setTitle('Adresse mail liée')
             .setColor('Green')
             .setDescription(`L'adresse \`${email.join('@')}\` est liée à ton compte 👌\nTu peux désormais saisir tes notes, calculer tes moyennes et fixer tes objectifs!\n\n⚠️ Par défaut, ton nom apparaîtra dans les classements. Si tu veux y remédier, utilise ${commandMention(interaction.client, 'anonymat')}`);
+        const termsEmbed = new EmbedBuilder()
+            .setTitle('Conditions d\'utilisation')
+            .setColor('Blurple')
+            .setDescription(`En utilisant ce service, tu acceptes ses [conditions d'utilisation](${process.env.TOS}) et sa [politique de confidentialité](${process.env.PRIVACY}).\n\n⚠️ Si ces conditions ne te conviennent pas, utilise ${commandMention(interaction.client, 'aled')} pour demander la suppression de tes données.`);
 
-        interaction.reply({ embeds: [successEmbed], ephemeral: true });
+        await interaction.reply({ embeds: [successEmbed], ephemeral: true });
+        interaction.followUp({ embeds: [termsEmbed], ephemeral: true });
         initStudent(interaction.user.id, email.join('@')); // Create the student's row in the database
     }
 };
