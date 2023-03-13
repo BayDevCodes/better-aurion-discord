@@ -1,5 +1,5 @@
 // Third-party module
-const { EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction} = require('discord.js'); // Elements from the discord.js library
+const { EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction } = require('discord.js'); // Elements from the discord.js library
 
 const { averagesChart, commandMention, nameFromEmail, weightsChart } = require('../util/functions'); // Local functions
 const { Main, Marks, Promotion } = require('../util/tables'); // Database tables
