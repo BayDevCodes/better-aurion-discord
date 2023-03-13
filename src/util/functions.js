@@ -1,5 +1,5 @@
 // Third-party modules
-const { Client, Collection } = require('discord.js'); // Classes from the discord.js library
+const { Client, Collection, User } = require('discord.js'); // Classes from the discord.js library
 const Gradient = require('javascript-color-gradient'); // Library to generate gradients
 const QuickChart = require('quickchart-js'); // Library to generate charts
 const { readdirSync } = require('fs'); // Function to read the content of a directory
@@ -245,7 +245,7 @@ function commandMention(client, command) {
 function generateGradient(color, steps) {
     const rgb = [];
     for (let i = 0; i < 3; i++) // Convert the color to RGB
-        rgb.push(parseInt(color.slice(1 + 2*i, 3 + 2*i), 16));
+        rgb.push(parseInt(color.slice(1 + 2 * i, 3 + 2 * i), 16));
 
     const lightColor = `#${rgb.map(v => Math.min(0xFF, Math.round(v * 1.3)).toString(16)).join('')}`; // Slighly lighter variation of the color
     const darkColor = `#${rgb.map(v => Math.min(0xFF, Math.round(v * 0.7)).toString(16)).join('')}`; // Slighly darker variation
@@ -264,6 +264,20 @@ function getMarkId(unitId, courseId, typeId, number) {
     if (!marks.weights[unitId][courseId] || !marks.weights[unitId][courseId][typeId]) return null; // Return null if the mark is invalid
 
     return `${unitId}_${courseId}_${typeId}${number ? `_${number}` : ''}` // Generate the mark's id
+}
+
+/**
+ * Reports an error to the application manager.
+ * @param {Client} client Discord.js client
+ * @param {String} error Error message
+ * @param {String} user User that caused the error in case of an interaction error
+ */
+function handleError(client, error, user = null) {
+    const owner = client.application.owner instanceof User // Is the application managed by an individual or a team?
+        ? client.application.owner
+        : client.application.owner.owner;
+
+    owner.send(`Erreur détectée${user ? ` avec **${user}**` : ''}:\n\`\`\`js\n${error}\n\`\`\``);
 }
 
 /**
@@ -342,7 +356,7 @@ function predictMark(student, goal, unitId, courseId, typeId) {
 
     // same equation as above but to find the expected type average
     const typeGoal = (courseGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
-    
+
     const marksToAccount = student.marks.filter(m => m.value >= 0 && m.id.startsWith(`${unitId}_${courseId}_${typeId}}`)); // Get the marks to account for the type average
     if (!marksToAccount.length)
         return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
@@ -350,7 +364,7 @@ function predictMark(student, goal, unitId, courseId, typeId) {
     let markSum = 0; // Initialize the sum of the marks
     for (const mark of marksToAccount)
         markSum += mark.value; // Add the current mark to the sum
-    
+
     // The equation to find the expected mark is:
     // (markSum + ?) / markAmount = typeGoal
     // <=> markSum + ? = typegoal * markAmount
@@ -360,7 +374,7 @@ function predictMark(student, goal, unitId, courseId, typeId) {
 
 /**
  * Starts the bot instance, loads commands & events to it and connects it to Discord and the database.
- * @param {Client} client discord.js client
+ * @param {Client} client Discord.js client
  */
 async function start(client) {
     console.log('>>> loading commands...');
@@ -495,6 +509,7 @@ module.exports = {
     commandChoices,
     commandMention,
     getMarkId,
+    handleError,
     initStudent,
     nameFromEmail,
     predictMark,
