@@ -66,7 +66,7 @@ module.exports = {
                 const alreadyRefereeEmbed = new EmbedBuilder()
                     .setTitle('Déjà promu·e')
                     .setColor('Orange')
-                    .setDescription(`*L'utilisateur* **${user.tag}** *est déjà référent·e de cette instance*`);
+                    .setDescription(`*L'utilisateur* **${user.username}** *est déjà référent·e de cette instance*`);
 
                 return interaction.reply({ embeds: [alreadyRefereeEmbed], ephemeral: true });
             }
@@ -74,7 +74,7 @@ module.exports = {
             const newRefereeEmbed = new EmbedBuilder()
                 .setColor('Green')
                 .setTitle('Référent·e ajouté·e')
-                .setDescription(`*L'utilisateur* **${user.tag}** *est désormais référent·e de cette instance*`);
+                .setDescription(`*L'utilisateur* **${user.username}** *est désormais référent·e de cette instance*`);
             
             interaction.reply({ embeds: [newRefereeEmbed], ephemeral: true });
             return Main.push('referees', user.id);
@@ -84,7 +84,7 @@ module.exports = {
             const notRefereeEmbed = new EmbedBuilder()
                 .setTitle('Référent·e introuvable')
                 .setColor('Orange')
-                .setDescription(`*L'utilisateur* **${user.tag}** *n'est pas référent·e de cette instance*`);
+                .setDescription(`*L'utilisateur* **${user.username}** *n'est pas référent·e de cette instance*`);
             
             return interaction.reply({ embeds: [notRefereeEmbed], ephemeral: true });
         }
@@ -92,7 +92,7 @@ module.exports = {
         const removedRefereeEmbed = new EmbedBuilder()
             .setColor('Green')
             .setTitle('Référent·e retiré·e')
-            .setDescription(`*L'utilisateur* **${user.tag}** *n'est plus référent·e de cette instance*`);
+            .setDescription(`*L'utilisateur* **${user.username}** *n'est plus référent·e de cette instance*`);
         
         interaction.reply({ embeds: [removedRefereeEmbed], ephemeral: true });
         Main.pull('referees', user.id);
