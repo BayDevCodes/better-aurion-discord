@@ -1,5 +1,5 @@
 // Third-party module
-const { Interaction, User } = require("discord.js"); // Element from the discord.js library
+const { Interaction } = require("discord.js"); // Element from the discord.js library
 
 const { handleError } = require("../util/functions"); // Local function
 const { Main } = require("../util/tables"); // Database table
