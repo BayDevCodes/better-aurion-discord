@@ -1,6 +1,7 @@
 // Third-party module
 const { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder, User } = require('discord.js'); // Elements from the discord.js library
 
+const { calculateAverages } = require("../util/functions"); // Local function
 const { Main, Promotion } = require('../util/tables'); // Database table
 
 // Export the command's data & execute function
