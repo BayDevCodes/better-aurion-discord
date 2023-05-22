@@ -39,7 +39,9 @@ module.exports = {
                     const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
                     let description = studentRank // This is equal to 0 if the student is not part of the rankings
                         ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${rankings[studentRank - 1].value.averages[unitId].self}\`\n`
-                        : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
+                        : (await Promotion.get(interaction.user.id)).value.marks.length === publishedMarkCountR // Check if the student has added all published marks
+                            ? `*Tu ne fais pas partie du classement car tu es noté·e pour aucune évaluation de cette unité*\n`
+                            : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
 
                     // Do this for the first 10 students of the rankings
                     for (i = 0; i < 10; i++) {
@@ -109,7 +111,9 @@ module.exports = {
                 const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
                 let description = studentRank // This is equal to 0 if the student is not part of the rankings
                     ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${rankings[studentRank - 1].value.averages.general}\`\n`
-                    : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
+                    : (await Promotion.get(interaction.user.id)).value.marks.length === publishedMarkCountR // Check if the student has added all published marks
+                        ? `*Tu ne fais pas partie du classement car tu es noté·e pour aucune évaluation*\n`
+                        : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
 
                 // Do this for the first 10 students of the rankings
                 for (i = 0; i < 10; i++) {

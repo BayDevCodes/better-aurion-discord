@@ -54,7 +54,9 @@ module.exports = {
             const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
             let description = studentRank // This is equal to 0 if the student is not part of the rankings
                 ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${student.averages.general}\`\n`
-                : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
+                : (await Promotion.get(interaction.user.id)).value.marks.length === publishedMarkCount // Check if the student has added all published marks
+                    ? `*Tu ne fais pas partie du classement car tu es noté·e pour aucune évaluation*\n`
+                    : `⚠️ *Tu n'as pas ajouté toutes les notes disponibles,\nutilise* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n`;
 
             // Do this for the first 10 students of the rankings
             for (i = 0; i < 10; i++) {
@@ -90,7 +92,7 @@ module.exports = {
         }
 
         // These rankings contains students with a value for this mark
-        const rankings = (await Promotion.all()).filter(s => s.value.marks.some(m => m.id === markId)).sort((a, b) => b.value.marks.find(m => m.id === markId).value - a.value.marks.find(m => m.id === markId).value);
+        const rankings = (await Promotion.all()).filter(s => s.value.marks.some(m => m.id === markId && m.value >= 0)).sort((a, b) => b.value.marks.find(m => m.id === markId).value - a.value.marks.find(m => m.id === markId).value);
         if (rankings.length === 0) {
             const noStudentsEmbed = new EmbedBuilder()
                 .setColor('Orange')
@@ -103,7 +105,9 @@ module.exports = {
         const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
         let description = studentRank // This is equal to 0 if the student is not part of the rankings
             ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${student.marks.find(m => m.id === markId).value}\`\n`
-            : `⚠️ *Tu n'as pas ajouté cette note,\nutilise* ${commandMention(interaction.client, 'notes saisir')} *pour le faire.*\n`;
+            : (await Promotion.get(interaction.user.id)).marks.some(m => m.id === markId) // Check if the student has added this mark
+                ? '*Tu ne fais pas partie du classement car tu n\'es pas noté·e*\n'
+                : `⚠️ *Tu n'as pas ajouté cette note,\nutilise* ${commandMention(interaction.client, 'notes saisir')} *pour le faire.*\n`;
 
         // Do this for the first 10 students of the rankings
         for (i = 0; i < 10; i++) {
