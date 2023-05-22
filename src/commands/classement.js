@@ -95,7 +95,7 @@ module.exports = {
             const noStudentsEmbed = new EmbedBuilder()
                 .setColor('Orange')
                 .setTitle('Classement indisponible')
-                .setDescription(`Aucun·e étudiant·e n'a ajouté cette note, utilise ${commandMention(interaction.client, 'notes ajouter')} pour ajouter la tienne`);
+                .setDescription(`Aucun·e étudiant·e n'a ajouté cette note, utilise ${commandMention(interaction.client, 'notes saisir')} pour ajouter la tienne`);
 
             return interaction.reply({ embeds: [noStudentsEmbed], ephemeral: true });
         }
@@ -103,7 +103,7 @@ module.exports = {
         const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
         let description = studentRank // This is equal to 0 if the student is not part of the rankings
             ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${student.marks.find(m => m.id === markId).value}\`\n`
-            : `⚠️ *Tu n'as pas ajouté cette note,\nutilise* ${commandMention(interaction.client, 'notes ajouter')} *pour le faire.*\n`;
+            : `⚠️ *Tu n'as pas ajouté cette note,\nutilise* ${commandMention(interaction.client, 'notes saisir')} *pour le faire.*\n`;
 
         // Do this for the first 10 students of the rankings
         for (i = 0; i < 10; i++) {
