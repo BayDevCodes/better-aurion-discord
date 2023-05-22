@@ -16,13 +16,13 @@ module.exports = {
     /** @param {ButtonInteraction} interaction */
     async execute(interaction) {
         const embed = EmbedBuilder.from(interaction.message.embeds[0]).setColor('Blurple'); // Get the embed from which comes the click
-        const [titleStart, courseName] = embed.data.title.split('\n> '); // Parse the course name, if any
+        const [titleStart, moduleName] = embed.data.title.split('\n> '); // Parse the module name, if any
         const unitName = titleStart.split('en ')[1]; // Parse the unit name
 
-        // If we are in the course scope
-        if (courseName) {
+        // If we are in the module scope
+        if (moduleName) {
             /** @type {StringSelectMenuBuilder} */
-            const courseSelectMenu = interaction.client.components.get('chooseCourse').data;
+            const moduleSelectMenu = interaction.client.components.get('chooseModule').data;
             const unitId = Object.keys(marks.weights).find(unitId => marks.names.units[unitId] === unitName); // Get the unit
 
             switch (titleStart.split(' ')[0]) {
@@ -50,13 +50,13 @@ module.exports = {
                         description += `**${i + 1}** - **${student.value.anonymous ? '🕵️ Anonyme' : `[${nameFromEmail(student.value.email)}](https://discordapp.com/users/${student.id})`}** avec \`${student.value.averages[unitId].self}\`\n`;
                     }
 
-                    courseSelectMenu.setPlaceholder('Voir le classement par moyenne d\'un cours');
+                    moduleSelectMenu.setPlaceholder('Voir le classement par moyenne d\'un module');
                     embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
                 break;
 
                 case 'Coefficients':
-                    courseSelectMenu.setPlaceholder('Voir les coefficients d\'un cours en détail');
-                    embed.setImage(weightsChart(unitId)); // Update chart with unit's course weights
+                    moduleSelectMenu.setPlaceholder('Voir les coefficients d\'un module en détail');
+                    embed.setImage(weightsChart(unitId)); // Update chart with unit's module weights
                 break;
 
                 case 'Moyenne':
@@ -64,13 +64,13 @@ module.exports = {
                     const unitAverages = student.averages[unitId];
 
                     const names = [], values = []; // Initialize name & value arrays to use in the chart
-                    for (const courseId of Object.keys(marks.weights[unitId]).slice(1)) {
-                        names.push(marks.names.courses[courseId]);
-                        values.push(unitAverages[courseId].self);
+                    for (const moduleId of Object.keys(marks.weights[unitId]).slice(1)) {
+                        names.push(marks.names.modules[moduleId]);
+                        values.push(unitAverages[moduleId].self);
                     }
                     const promotionAverages = await Main.get('promotionAverages');
                     const promotionValues = promotionAverages // Are promotion averages available?
-                        ? Object.keys(promotionAverages[unitId]).slice(0, -1).map(courseId => promotionAverages[unitId][courseId].self)
+                        ? Object.keys(promotionAverages[unitId]).slice(0, -1).map(moduleId => promotionAverages[unitId][moduleId].self)
                         : [];
 
                     const publishedMarkCountA = (await Marks.all()).length;
@@ -78,16 +78,16 @@ module.exports = {
                         ? `⚠️ *Tu n'as pas ajouté toutes les notes publiées (${student.marks.length}/${publishedMarkCountA}),\nUtilise la commande* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n\n`
                         : '';
 
-                    courseSelectMenu.setPlaceholder('Voir la moyenne d\'un cours en détail');
-                    embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par cours:*`)
-                        .setImage(await averagesChart(names, values, promotionValues, 'cours'));
+                    moduleSelectMenu.setPlaceholder('Voir la moyenne d\'un module en détail');
+                    embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par module:*`)
+                        .setImage(await averagesChart(names, values, promotionValues, 'module'));
                 break;
             }
 
             embed.setTitle(titleStart);
-            courseSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(courseId => new StringSelectMenuOptionBuilder().setLabel(marks.names.courses[courseId]).setValue(courseId)));
+            moduleSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(moduleId => new StringSelectMenuOptionBuilder().setLabel(marks.names.modules[moduleId]).setValue(moduleId)));
 
-            return interaction.update({ components: [new ActionRowBuilder().addComponents(courseSelectMenu)].concat(interaction.message.components), embeds: [embed] }); // Add the course select menu
+            return interaction.update({ components: [new ActionRowBuilder().addComponents(moduleSelectMenu)].concat(interaction.message.components), embeds: [embed] }); // Add the module select menu
         }
 
         /** @type {StringSelectMenuBuilder} */

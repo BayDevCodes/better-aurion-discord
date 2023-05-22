@@ -5,9 +5,9 @@
             "unitId": "unitName",
             "...": "..."
         },
-        "courses": {
-            "courseId": "courseName",
-            "courseId": "courseName",
+        "modules": {
+            "moduleId": "moduleName",
+            "moduleId": "moduleName",
             "...": "..."
         },
         "types": {
@@ -19,7 +19,7 @@
     "colors": {
         "unitId": {
             "unitColor": "hexaColor",
-            "courseColors": [
+            "moduleColors": [
                 "hexaColor",
                 "hexaColor",
                 "..."
@@ -27,7 +27,7 @@
         },
         "unitId": {
             "unitColor": "hexaColor",
-            "courseColors": [
+            "moduleColors": [
                 "hexaColor",
                 "hexaColor",
                 "..."
@@ -43,33 +43,33 @@
     "weights": {
         "unitId": {
             "ECTS": unitWeight,
-            "courseId": {
+            "moduleId": {
                 "typeId": typeWeight,
                 "typeId": typeWeight,
                 "...": ...,
-                "self": courseWeight
+                "self": moduleWeight
             },
-            "courseId": {
+            "moduleId": {
                 "typeId": typeWeight,
                 "type2Id": typeWeight,
                 "...": ...,
-                "self": courseWeight
+                "self": moduleWeight
             },
             "...": {...}
         },
         "unitId": {
             "ECTS": unitWeight,
-            "courseId": {
+            "moduleId": {
                 "typeId": typeWeight,
                 "typeId": typeWeight,
                 "...": ...,
-                "self": courseWeight
+                "self": moduleWeight
             },
-            "courseId": {
+            "moduleId": {
                 "typeId": typeWeight,
                 "typeId": typeWeight,
                 "...": ...,
-                "self": courseWeight
+                "self": moduleWeight
             },
             "...": {...}
         },

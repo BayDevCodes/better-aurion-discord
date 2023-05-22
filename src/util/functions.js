@@ -12,7 +12,7 @@ const marks = require('../constants/marks.json'); // Constants regarding the mar
  * @param {String[]} names array of average names
  * @param {Number[]} values array of average values
  * @param {Number[]} promotionValues array of promotion average values
- * @param {String} scope scope of the averages (unit, course or type)
+ * @param {String} scope scope of the averages (unit, module or type)
  * @param {Number[]} goals array of goals set by the student in unit scope
  * @returns {Promise<String>} chart URL
  */
@@ -157,7 +157,7 @@ function calculateAverages(markList) {
      *  general: Number
      *  [unitId: String]: {
      *      self: Number
-     *      [courseId: String]: {
+     *      [moduleId: String]: {
      *          self: Number
      *          [typeId: String]: Number
      *      }
@@ -171,38 +171,38 @@ function calculateAverages(markList) {
         const unitMarks = marksToAccount.filter(m => m.id.split('_')[0] === unitId); // Remove marks that are not in the current unit
         averages[unitId] = {}; // Initialize the unit's averages object
 
-        for (const courseId of Object.keys(marks.weights[unitId]).slice(1)) {
-            const courseMarks = unitMarks.filter(m => m.id.split('_')[1] === courseId); // Remove marks that are not in the current course
-            averages[unitId][courseId] = {}; // Initialize the course's averages object
+        for (const moduleId of Object.keys(marks.weights[unitId]).slice(1)) {
+            const moduleMarks = unitMarks.filter(m => m.id.split('_')[1] === moduleId); // Remove marks that are not in the current module
+            averages[unitId][moduleId] = {}; // Initialize the module's averages object
 
-            for (const typeId of Object.keys(marks.weights[unitId][courseId]).slice(0, -1)) {
-                const typeMarks = courseMarks.filter(m => m.id.split('_')[2] === typeId); // Remove marks that are not of the current type
+            for (const typeId of Object.keys(marks.weights[unitId][moduleId]).slice(0, -1)) {
+                const typeMarks = moduleMarks.filter(m => m.id.split('_')[2] === typeId); // Remove marks that are not of the current type
 
                 let markSum = 0; // Initialize the sum of the marks
                 for (const mark of typeMarks)
                     markSum += mark.value; // Add the current mark to the sum
 
-                averages[unitId][courseId][typeId] = typeMarks.length ? Math.round(markSum / typeMarks.length * 100) / 100 : null; // Calculate the average of the current type
+                averages[unitId][moduleId][typeId] = typeMarks.length ? Math.round(markSum / typeMarks.length * 100) / 100 : null; // Calculate the average of the current type
             }
 
             let typeSum = 0, typeWeights = 0; // Initialize the sum and weights of the types
-            for (const [type, average] of Object.entries(averages[unitId][courseId])) {
-                const weight = marks.weights[unitId][courseId][type]; // Get the weight of the current type
+            for (const [type, average] of Object.entries(averages[unitId][moduleId])) {
+                const weight = marks.weights[unitId][moduleId][type]; // Get the weight of the current type
                 if (average !== null)
                     typeSum += average * weight, typeWeights += weight; // Add the current type to the sum and weights
             }
 
-            averages[unitId][courseId].self = typeWeights ? Math.round(typeSum / typeWeights * 100) / 100 : null; // Calculate the average of the current course
+            averages[unitId][moduleId].self = typeWeights ? Math.round(typeSum / typeWeights * 100) / 100 : null; // Calculate the average of the current module
         }
 
-        let courseSum = 0, courseWeights = 0; // Initialize the sum and weights of the courses
-        for (const [course, average] of Object.entries(averages[unitId])) {
-            const weight = marks.weights[unitId][course].self; // Get the weight of the current course
+        let moduleSum = 0, moduleWeights = 0; // Initialize the sum and weights of the modules
+        for (const [module, average] of Object.entries(averages[unitId])) {
+            const weight = marks.weights[unitId][module].self; // Get the weight of the current module
             if (average.self !== null)
-                courseSum += average.self * weight, courseWeights += weight; // Add the current course to the sum and weights
+                moduleSum += average.self * weight, moduleWeights += weight; // Add the current module to the sum and weights
         }
 
-        averages[unitId].self = courseWeights ? Math.round(courseSum / courseWeights * 100) / 100 : null; // Calculate the average of the current unit
+        averages[unitId].self = moduleWeights ? Math.round(moduleSum / moduleWeights * 100) / 100 : null; // Calculate the average of the current unit
     }
 
     let unitSum = 0, unitWeights = 0; // Initialize the sum and weights of the units
@@ -240,7 +240,7 @@ function commandMention(client, command) {
 /**
  * Generates a gradient from a color (lighter to darker variation).
  * @param {String} color color of the unit
- * @param {Number} steps amount of courses
+ * @param {Number} steps amount of modules
  */
 function generateGradient(color, steps) {
     const rgb = [];
@@ -256,14 +256,14 @@ function generateGradient(color, steps) {
 /**
  * Generates a mark's id & name from its components if they are valid.
  * @param {String} unitId id of the unit
- * @param {String} courseId id of the course
+ * @param {String} moduleId id of the module
  * @param {String} typeId id of the type
  * @param {Number} number mark number
  */
-function getMarkId(unitId, courseId, typeId, number) {
-    if (!marks.weights[unitId][courseId] || !marks.weights[unitId][courseId][typeId]) return null; // Return null if the mark is invalid
+function getMarkId(unitId, moduleId, typeId, number) {
+    if (!marks.weights[unitId][moduleId] || !marks.weights[unitId][moduleId][typeId]) return null; // Return null if the mark is invalid
 
-    return `${unitId}_${courseId}_${typeId}${number ? `_${number}` : ''}` // Generate the mark's id
+    return `${unitId}_${moduleId}_${typeId}${number ? `_${number}` : ''}` // Generate the mark's id
 }
 
 /**
@@ -314,7 +314,7 @@ function nameFromEmail(email) {
  * Calculates the minimum mark needed to get/keep an goal in a unit (can be negative if the student is a chad).
  * @param {{ averages: {
  *  [unitId: String]: {
- *      [courseId: String]: {
+ *      [moduleId: String]: {
  *          [typeId: String]: Number,
  *          self: Number
  *      },
@@ -324,40 +324,40 @@ function nameFromEmail(email) {
  * }, marks: { id: String, value: Number }[] }} student student object
  * @param {Number} goal // goal to reach
  * @param {String} unitId // id of the unit
- * @param {String} courseId // id of the course
+ * @param {String} moduleId // id of the module
  * @param {String} typeId // id of the type
  */
-function predictMark(student, goal, unitId, courseId, typeId) {
-    const newCourseWeight = marks.weights[unitId][courseId].self; // Get the weight of the course with a new mark
-    let courseSum = 0, courseWeights = newCourseWeight; // Initialize the sum and weights of the courses
-    for (const [course, average] of Object.entries(student.averages[unitId])) {
-        if (average.self === null || course === courseId || course === 'self') continue; // Skip the courses with no average, the course with a new mark and the unit average
-        const weight = marks.weights[unitId][course].self; // Get the weight of the current course
+function predictMark(student, goal, unitId, moduleId, typeId) {
+    const newModuleWeight = marks.weights[unitId][moduleId].self; // Get the weight of the module with a new mark
+    let moduleSum = 0, moduleWeights = newModuleWeight; // Initialize the sum and weights of the modules
+    for (const [module, average] of Object.entries(student.averages[unitId])) {
+        if (average.self === null || module === moduleId || module === 'self') continue; // Skip the modules with no average, the module with a new mark and the unit average
+        const weight = marks.weights[unitId][module].self; // Get the weight of the current module
 
-        courseSum += average.self * weight, courseWeights += weight; // Add the current course to the sum and weights
+        moduleSum += average.self * weight, moduleWeights += weight; // Add the current module to the sum and weights
     }
 
-    // The equation to find the expected course average is:
-    // (courseSum + ? * newCourseWeight) / courseWeights = goal
-    // <=> courseSum + ? * newCourseWeight = goal * courseWeights
-    // <=> ? * newCourseWeight = (goal * courseWeights - courseSum)
-    // <=> ? = (goal * courseWeights - courseSum) / newCourseWeight
+    // The equation to find the expected module average is:
+    // (moduleSum + ? * newModuleWeight) / moduleWeights = goal
+    // <=> moduleSum + ? * newModuleWeight = goal * moduleWeights
+    // <=> ? * newModuleWeight = (goal * moduleWeights - moduleSum)
+    // <=> ? = (goal * moduleWeights - moduleSum) / newModuleWeight
 
-    const courseGoal = (goal * courseWeights - courseSum) / newCourseWeight; // Calculate the expected course average
+    const moduleGoal = (goal * moduleWeights - moduleSum) / newModuleWeight; // Calculate the expected module average
 
-    const newTypeWeight = marks.weights[unitId][courseId][typeId]; // Get the weight of the type with a new mark
+    const newTypeWeight = marks.weights[unitId][moduleId][typeId]; // Get the weight of the type with a new mark
     let typeSum = 0, typeWeights = newTypeWeight; // Initialize the sum and weights of the types
-    for (const [type, average] of Object.entries(student.averages[unitId][courseId])) {
-        if (average === null || type === typeId || type === 'self') continue; // Skip the types with no average, the type with a new mark and the course average
-        const weight = marks.weights[unitId][courseId][type]; // Get the weight of the current type
+    for (const [type, average] of Object.entries(student.averages[unitId][moduleId])) {
+        if (average === null || type === typeId || type === 'self') continue; // Skip the types with no average, the type with a new mark and the module average
+        const weight = marks.weights[unitId][moduleId][type]; // Get the weight of the current type
 
         typeSum += average * weight, typeWeights += weight; // Add the current type to the sum and weights
     }
 
     // same equation as above but to find the expected type average
-    const typeGoal = (courseGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
+    const typeGoal = (moduleGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
 
-    const marksToAccount = student.marks.filter(m => m.value >= 0 && m.id.startsWith(`${unitId}_${courseId}_${typeId}}`)); // Get the marks to account for the type average
+    const marksToAccount = student.marks.filter(m => m.value >= 0 && m.id.startsWith(`${unitId}_${moduleId}_${typeId}}`)); // Get the marks to account for the type average
     if (!marksToAccount.length)
         return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
 
@@ -434,31 +434,31 @@ async function updatePromotionAverages() {
 }
 
 /**
- * Generates a chart URL with general weights, unit's or course's ones.
+ * Generates a chart URL with general weights, unit's or module's ones.
  * @param {String} unitId id of the unit
- * @param {String} courseId id of the course
+ * @param {String} moduleId id of the module
  * @returns {String} chart URL
  */
-function weightsChart(unitId = null, courseId = null) {
-    // Get the colors of types, courses or units
-    const colors = courseId
+function weightsChart(unitId = null, moduleId = null) {
+    // Get the colors of types, modules or units
+    const colors = moduleId
         ? marks.colors.types
         : unitId
             ? generateGradient(marks.colors[unitId], Object.keys(marks.weights[unitId]).length - 1)
             : Object.keys(marks.weights).map(unitId => marks.colors[unitId]);
 
-    // Get the weights of types, courses or units
-    const data = courseId
-        ? Object.keys(marks.weights[unitId][courseId]).slice(0, -1).map(type => marks.weights[unitId][courseId][type])
+    // Get the weights of types, modules or units
+    const data = moduleId
+        ? Object.keys(marks.weights[unitId][moduleId]).slice(0, -1).map(type => marks.weights[unitId][moduleId][type])
         : unitId
-            ? Object.keys(marks.weights[unitId]).slice(1).map(courseId => marks.weights[unitId][courseId].self)
+            ? Object.keys(marks.weights[unitId]).slice(1).map(moduleId => marks.weights[unitId][moduleId].self)
             : Object.keys(marks.weights).map(unitId => marks.weights[unitId].ECTS);
 
-    // Get the names of types, courses or units
-    const labels = courseId
-        ? Object.keys(marks.weights[unitId][courseId]).slice(0, -1).map(type => marks.names.types[type])
+    // Get the names of types, modules or units
+    const labels = moduleId
+        ? Object.keys(marks.weights[unitId][moduleId]).slice(0, -1).map(type => marks.names.types[type])
         : unitId
-            ? Object.keys(marks.weights[unitId]).slice(1).map(courseId => marks.names.courses[courseId])
+            ? Object.keys(marks.weights[unitId]).slice(1).map(moduleId => marks.names.modules[moduleId])
             : Object.keys(marks.weights).map(unitId => marks.names.units[unitId]);
 
     const chart = new QuickChart(); // Create a new chart
@@ -485,7 +485,7 @@ function weightsChart(unitId = null, courseId = null) {
             legend: { display: false }, // Hide the legend
             plugins: {
                 outlabels: {
-                    text: courseId ? 'Pondération %p\n%l' : unitId ? "Coeff %v (%p)\n%l" : "%v ECTS (%p)\n%l", // Set the text
+                    text: moduleId ? 'Pondération %p\n%l' : unitId ? "Coeff %v (%p)\n%l" : "%v ECTS (%p)\n%l", // Set the text
                     borderColor: '#000',
                     borderRadius: 10,
                     borderWidth: 2,

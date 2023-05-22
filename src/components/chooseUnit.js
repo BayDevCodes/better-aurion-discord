@@ -17,7 +17,7 @@ module.exports = {
         const unitId = interaction.values[0]; // Get the unit selection
 
         /** @type {StringSelectMenuBuilder} */
-        const courseSelectMenu = interaction.client.components.get('chooseCourse').data;
+        const moduleSelectMenu = interaction.client.components.get('chooseModule').data;
         const backButton = interaction.client.components.get('back').data;
         switch (embed.data.title.split(' ')[0]) {
             case 'Classement':
@@ -45,13 +45,13 @@ module.exports = {
                     description += `**${i + 1}** - **${student.value.anonymous ? '🕵️ Anonyme' : `[${nameFromEmail(student.value.email)}](https://discordapp.com/users/${student.id})`}** avec \`${student.value.averages[unitId].self}\`\n`;
                 }
 
-                courseSelectMenu.setPlaceholder('Voir le classement par moyenne d\'un cours');
+                moduleSelectMenu.setPlaceholder('Voir le classement par moyenne d\'un module');
                 embed.setDescription(description).setFooter({ text: `${rankings.length} étudiant·e·s classé·e·s (ayant saisi toutes les notes)` });
             break;
 
             case 'Coefficients':
-                courseSelectMenu.setPlaceholder('Voir les coefficients d\'un cours en détail');
-                embed.setTitle(`Coefficients en ${marks.names.units[unitId]}`).setImage(weightsChart(unitId)); // Update chart with unit's course weights
+                moduleSelectMenu.setPlaceholder('Voir les coefficients d\'un module en détail');
+                embed.setTitle(`Coefficients en ${marks.names.units[unitId]}`).setImage(weightsChart(unitId)); // Update chart with unit's module weights
             break;
 
             case 'Moyenne':
@@ -65,13 +65,13 @@ module.exports = {
                 }
 
                 const names = [], values = []; // Initialize name & value arrays to use in the chart
-                for (const courseId of Object.keys(marks.weights[unitId]).slice(1)) {
-                    names.push(marks.names.courses[courseId]);
-                    values.push(unitAverages[courseId].self);
+                for (const moduleId of Object.keys(marks.weights[unitId]).slice(1)) {
+                    names.push(marks.names.modules[moduleId]);
+                    values.push(unitAverages[moduleId].self);
                 }
                 const promotionAverages = await Main.get('promotionAverages');
                 const promotionValues = promotionAverages // Are promotion averages available?
-                    ? Object.keys(promotionAverages[unitId]).slice(0, -1).map(courseId => promotionAverages[unitId][courseId].self)
+                    ? Object.keys(promotionAverages[unitId]).slice(0, -1).map(moduleId => promotionAverages[unitId][moduleId].self)
                     : [];
 
                 const publishedMarkCountA = (await Marks.all()).length;
@@ -79,15 +79,15 @@ module.exports = {
                     ? `⚠️ *Tu n'as pas ajouté toutes les notes publiées (${student.marks.length}/${publishedMarkCountA}),\nUtilise la commande* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n\n`
                     : '';
 
-                courseSelectMenu.setPlaceholder('Voir la moyenne d\'un cours en détail');
-                embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par cours:*`)
-                    .setImage(await averagesChart(names, values, promotionValues, 'cours'));
+                moduleSelectMenu.setPlaceholder('Voir la moyenne d\'un module en détail');
+                embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par module:*`)
+                    .setImage(await averagesChart(names, values, promotionValues, 'module'));
             break;
         }
 
-        // Add components to choose a course or go back
-        courseSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(courseId => new StringSelectMenuOptionBuilder().setLabel(marks.names.courses[courseId]).setValue(courseId)));
-        const rows = [new ActionRowBuilder().addComponents(courseSelectMenu), new ActionRowBuilder().addComponents(backButton)];
+        // Add components to choose a module or go back
+        moduleSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(moduleId => new StringSelectMenuOptionBuilder().setLabel(marks.names.modules[moduleId]).setValue(moduleId)));
+        const rows = [new ActionRowBuilder().addComponents(moduleSelectMenu), new ActionRowBuilder().addComponents(backButton)];
 
         interaction.update({ components: rows, embeds: [embed] });
     }

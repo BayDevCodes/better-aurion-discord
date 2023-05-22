@@ -19,9 +19,9 @@ module.exports = {
                 .setRequired(true)
             )
             .addStringOption(option => option
-                .setName('cours')
-                .setDescription('Cours concerné par la note.')
-                .addChoices(...commandChoices('courses'))
+                .setName('module')
+                .setDescription('Module concerné par la note.')
+                .addChoices(...commandChoices('modules'))
                 .setRequired(true)
             )
             .addStringOption(option => option
@@ -126,16 +126,16 @@ module.exports = {
         }
 
         const unit = interaction.options.getString('unité');
-        const course = interaction.options.getString('cours');
+        const module = interaction.options.getString('module');
         const type = interaction.options.getString('type');
         const number = interaction.options.getInteger('numéro');
 
-        const markId = getMarkId(unit, course, type, number); // Validate the id
+        const markId = getMarkId(unit, module, type, number); // Validate the id
         if (!markId) {
             const invalidEmbed = new EmbedBuilder()
                 .setTitle('Combinaison invalide')
                 .setColor('Red')
-                .setDescription('Cette combinaison d\'unité, de cours et de type de note n\'existe pas.');
+                .setDescription('Cette combinaison d\'unité, de module et de type de note n\'existe pas.');
             
             return interaction.reply({ embeds: [invalidEmbed], ephemeral: true });
         }

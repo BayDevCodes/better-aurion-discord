@@ -27,10 +27,10 @@ module.exports = {
                 .addChoices(...commandChoices('units'))
             )
             .addStringOption(option => option
-                .setName('matière')
-                .setDescription('Cours concerné par la note.')
+                .setName('module')
+                .setDescription('Module concerné par la note.')
                 .setRequired(true)
-                .addChoices(...commandChoices('courses'))
+                .addChoices(...commandChoices('modules'))
             )
             .addStringOption(option => option
                 .setName('type')
@@ -114,21 +114,21 @@ module.exports = {
 
             case 'prévoir':
                 const unit = interaction.options.getString('unité');
-                const course = interaction.options.getString('matière');
+                const module = interaction.options.getString('module');
                 const type = interaction.options.getString('type');
 
-                const markId = getMarkId(unit, course, type); // Validate the id
+                const markId = getMarkId(unit, module, type); // Validate the id
                 if (!markId) {
                     const invalidEmbed = new EmbedBuilder()
                         .setTitle('Combinaison invalide')
                         .setColor('Red')
-                        .setDescription('Cette combinaison d\'unité, de cours et de type de note n\'existe pas.');
+                        .setDescription('Cette combinaison d\'unité, de module et de type de note n\'existe pas.');
 
                     return interaction.reply({ embeds: [invalidEmbed], ephemeral: true });
                 }
 
                 const goal = student.goals[unit];
-                const predictedMark = predictMark(student, goal, unit, course, type);
+                const predictedMark = predictMark(student, goal, unit, module, type);
 
                 const predictionEmbed = new EmbedBuilder()
                     .setTitle('Prévision calculée')

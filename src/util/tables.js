@@ -10,7 +10,7 @@ module.exports = {
      *   
      *  **Mark row structure:**  
      *  markId: `string` *The full name of the mark.*  
-     *  (e.g. "Unit > Course: Type n°number")
+     *  (e.g. "Unit > Module: Type n°number")
      */
     Marks: db.table('marks'),
 
@@ -29,9 +29,9 @@ module.exports = {
      *  unitId: `object`  
      *  * * * *The unit's average.*  
      *  self: `number`  
-     *  * * * *The averages object of a course.*  
-     *  courseId: `object`  
-     *  * * * * *The course's average.*  
+     *  * * * *The averages object of a module.*  
+     *  moduleId: `object`  
+     *  * * * * *The module's average.*  
      *  self: `number`  
      *  * * * * *The average of a type.*  
      *  typeId: `number`
@@ -39,7 +39,7 @@ module.exports = {
      *  email: `string`  
      *  * *The array of mark objects registered by the student.*  
      *  marks: `object[]`  
-     *  * * *The mark's id* ("unitId_courseId_type_number").  
+     *  * * *The mark's id* ("unitId_moduleId_type_number").  
      *  id: `string`  
      *  * * *The mark's value between 0 & 20 or -1 for absence.*  
      *  value: `number`  
