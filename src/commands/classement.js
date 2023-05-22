@@ -48,7 +48,7 @@ module.exports = {
                     .setTitle('Classement indisponible')
                     .setDescription(`Aucun·e étudiant·e n'a ajouté toutes ses notes, utilise ${commandMention(interaction.client, 'notes manquantes')} pour voir celles que tu dois ajouter`);
 
-                return interaction.editReply({ embeds: [noStudentsEmbed] });
+                return interaction.reply({ embeds: [noStudentsEmbed] });
             }
 
             const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
