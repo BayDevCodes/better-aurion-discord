@@ -10,7 +10,7 @@
     "start": "node ."
   },
   "dependencies": {
-    "better-sqlite3": "^8.3.0",
+    "better-sqlite3": "^8.4.0",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "javascript-color-gradient": "^2.4.4",
