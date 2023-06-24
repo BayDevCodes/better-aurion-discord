@@ -1,7 +1,7 @@
 // Third-party module
 const { Interaction } = require("discord.js"); // Element from the discord.js library
 
-const { handleError } = require("../util/functions"); // Local function
+const { findMatches, handleError } = require("../util/functions"); // Local function
 const { Main } = require("../util/tables"); // Database table
 
 // Export the event's name & execute function
@@ -10,6 +10,8 @@ module.exports = {
 
     /** @param {Interaction} interaction */
     execute(interaction) {
+        if (interaction.isAutocomplete()) return findMatches(interaction);
+
         Main.add('interactionCount', 1);
 
         if (interaction.isCommand()) {

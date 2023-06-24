@@ -1,10 +1,10 @@
 // Third-party modules
-const { Client, Collection, User } = require('discord.js'); // Classes from the discord.js library
+const { AutocompleteInteraction, Client, Collection, User } = require('discord.js'); // Classes from the discord.js library
 const Gradient = require('javascript-color-gradient'); // Library to generate gradients
 const QuickChart = require('quickchart-js'); // Library to generate charts
 const { readdirSync } = require('fs'); // Function to read the content of a directory
 
-const { Main, Promotion } = require('./tables'); // Database tables
+const { Main, Marks, Promotion } = require('./tables'); // Database tables
 const marks = require('../constants/marks.json'); // Constants regarding the marks defined at setup
 
 /**
@@ -235,6 +235,20 @@ function commandChoices(optionId) {
 function commandMention(client, command) {
     const commandId = client.application.commands.cache.find(c => c.name === command.split(' ')[0])?.id; // Get the command's id
     return `</${command}:${commandId ? commandId : 0}>`; // Return the command mention
+}
+
+/**
+ * Returns published marks that match the input to the user.
+ * @param {AutocompleteInteraction} interaction the user input
+ */
+async function findMatches(interaction) {
+    const matches = [];
+    const inputRegex = new RegExp(interaction.options.getFocused(), 'i'); // Case insensitive search
+
+    for (const mark of Object.values(await Marks.all()))
+        if (inputRegex.test(mark.id) | inputRegex.test(mark.value)) matches.push({ name: mark.value, value: mark.id });
+
+    return interaction.respond(matches.slice(0, 25)); // Discord supports at most 25 suggestions
 }
 
 /**
@@ -508,6 +522,7 @@ module.exports = {
     calculateAverages,
     commandChoices,
     commandMention,
+    findMatches,
     getMarkId,
     handleError,
     initStudent,
