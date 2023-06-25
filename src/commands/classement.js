@@ -18,7 +18,7 @@ module.exports = {
             .setDescription('Voir le classement de la promo pour une note (étudiant·e·s ayant saisi cette note uniquement).')
             .addStringOption(option => option
                 .setName('identifiant')
-                .setDescription('L\'identifiant de la note (exemple: MATH_M1_CC_1).')
+                .setDescription('L\'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d\'options.')
                 .setAutocomplete(true)
                 .setMaxLength(64) // Prevents the user from entering a too long string
                 .setRequired(true)

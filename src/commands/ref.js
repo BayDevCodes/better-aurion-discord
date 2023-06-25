@@ -48,7 +48,7 @@ module.exports = {
             .setDescription('⚠️ Retirer une note et les résultats associés (irréversible).')
             .addStringOption(option => option
                 .setName('identifiant')
-                .setDescription('L\'identifiant de la note à retirer (exemple: MATH_M1_CC_1).')
+                .setDescription('L\'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d\'options.')
                 .setAutocomplete(true)
                 .setMaxLength(64) // Prevents the user from entering a too long string
                 .setRequired(true)
