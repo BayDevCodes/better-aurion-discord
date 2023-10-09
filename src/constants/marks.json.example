@@ -17,23 +17,9 @@
         }
     },
     "colors": {
-        "unitId": {
-            "unitColor": "hexaColor",
-            "moduleColors": [
-                "hexaColor",
-                "hexaColor",
-                "..."
-            ]
-        },
-        "unitId": {
-            "unitColor": "hexaColor",
-            "moduleColors": [
-                "hexaColor",
-                "hexaColor",
-                "..."
-            ]
-        },
-        "...": {...},
+        "unitId": "hexaColor",
+        "unitId": hexaColor",
+        "...": "...",
         "types": [
             "hexaColor",
             "hexaColor",
