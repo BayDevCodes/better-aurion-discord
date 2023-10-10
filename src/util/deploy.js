@@ -8,11 +8,11 @@ require('dotenv').config(); // Load the environment variables to the process.env
 console.log('\n\n>>> loading commands...');
 const commands = []; // Initialize the commands list
 
-readdirSync('./src/commands').forEach(file => {
-	const command = require(`../commands/${file}`); // Import the command
+readdirSync('./src/commands').forEach((file) => {
+  const command = require(`../commands/${file}`); // Import the command
 
-	commands.push(command.data.toJSON()); // Add it to the commands list
-    console.log(`${command.data.name} slash command ready to deploy!`);
+  commands.push(command.data.toJSON()); // Add it to the commands list
+  console.log(`${command.data.name} slash command ready to deploy!`);
 });
 
 console.log('\n\n>>> deploying commands...');
@@ -21,9 +21,10 @@ const route = Routes.applicationCommands(process.env.CLIENT_ID); // Set the rout
 
 // Try to make a request to reupload the application's commands to Discord
 try {
-    rest.put(route, { body: commands }).then(data => {
-	    console.log(`\n-> Successfully deployed ${data.length} application commands!\n`);
-	    data.forEach(command => console.log(`- ${command.name} | ${command.id}`)); // Log each sent command with it's id
-    });
-}
-catch { console.error() } // In case the request is messed up
+  rest.put(route, { body: commands }).then((data) => {
+    console.log(`\n-> Successfully deployed ${data.length} application commands!\n`);
+    data.forEach((command) => console.log(`- ${command.name} | ${command.id}`)); // Log each sent command with it's id
+  });
+} catch {
+  console.error(); // In case the request is messed up
+} 

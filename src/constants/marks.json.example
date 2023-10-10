@@ -1,64 +1,64 @@
 {
-    "names": {
-        "units": {
-            "unitId": "unitName",
-            "unitId": "unitName",
-            "...": "..."
-        },
-        "modules": {
-            "moduleId": "moduleName",
-            "moduleId": "moduleName",
-            "...": "..."
-        },
-        "types": {
-            "typeId": "typeName",
-            "typeId": "typeName",
-            "...": "..."
-        }
+  "names": {
+    "units": {
+      "unitId": "unitName",
+      "unitId": "unitName",
+      "...": "..."
     },
-    "colors": {
-        "unitId": "hexaColor",
-        "unitId": "hexaColor",
-        "...": "...",
-        "types": [
-            "hexaColor",
-            "hexaColor",
-            "..."
-        ]
+    "modules": {
+      "moduleId": "moduleName",
+      "moduleId": "moduleName",
+      "...": "..."
     },
-    "weights": {
-        "unitId": {
-            "ECTS": unitWeight,
-            "moduleId": {
-                "typeId": typeWeight,
-                "typeId": typeWeight,
-                "...": ...,
-                "self": moduleWeight
-            },
-            "moduleId": {
-                "typeId": typeWeight,
-                "type2Id": typeWeight,
-                "...": ...,
-                "self": moduleWeight
-            },
-            "...": {...}
-        },
-        "unitId": {
-            "ECTS": unitWeight,
-            "moduleId": {
-                "typeId": typeWeight,
-                "typeId": typeWeight,
-                "...": ...,
-                "self": moduleWeight
-            },
-            "moduleId": {
-                "typeId": typeWeight,
-                "typeId": typeWeight,
-                "...": ...,
-                "self": moduleWeight
-            },
-            "...": {...}
-        },
-        "...": {...}
+    "types": {
+      "typeId": "typeName",
+      "typeId": "typeName",
+      "...": "..."
     }
+  },
+  "colors": {
+    "unitId": "hexaColor",
+    "unitId": "hexaColor",
+    "...": "...",
+    "types": [
+      "hexaColor",
+      "hexaColor",
+      "..."
+    ]
+  },
+  "weights": {
+    "unitId": {
+      "ECTS": unitWeight,
+      "moduleId": {
+        "typeId": typeWeight,
+        "typeId": typeWeight,
+        "...": ...,
+        "self": moduleWeight
+      },
+      "moduleId": {
+        "typeId": typeWeight,
+        "typeId": typeWeight,
+        "...": ...,
+        "self": moduleWeight
+      },
+      "...": {...}
+    },
+    "unitId": {
+      "ECTS": unitWeight,
+      "moduleId": {
+        "typeId": typeWeight,
+        "typeId": typeWeight,
+        "...": ...,
+        "self": moduleWeight
+      },
+      "moduleId": {
+        "typeId": typeWeight,
+        "typeId": typeWeight,
+        "...": ...,
+        "self": moduleWeight
+      },
+      "...": {...}
+    },
+    "...": {...}
+  }
 }
