@@ -12,9 +12,8 @@ module.exports = {
     execute(interaction) {
         if (interaction.isAutocomplete()) return findMatches(interaction);
 
-        Main.add('interactionCount', 1);
-
         if (interaction.isCommand()) {
+            Main.add('interactionCount', 1);
             const command = interaction.client.commands.get(interaction.commandName);
             return command
                 ? command.execute(interaction).catch((error) => handleError(interaction.client, error.stack, interaction.user.username))
