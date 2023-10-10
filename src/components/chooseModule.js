@@ -16,6 +16,7 @@ module.exports = {
         const unitName = embed.data.title.split('en ')[1]; // Parse the unit name
         const unitId = Object.keys(marks.weights).find(unitId => marks.names.units[unitId] === unitName); // Get the unit
         const moduleId = interaction.values[0]; // Get the module selection
+        let file;
 
         embed.data.title += `\n> ${marks.names.modules[moduleId]}`; // Add module name to the title
         switch (embed.data.title.split(' ')[0]) {
@@ -58,7 +59,7 @@ module.exports = {
 
                 if (moduleAverages.self === null) {
                     embed.setColor('Orange').setDescription('Tu n\'as pas encore de moyenne pour ce module...').setImage();
-                    return interaction.update({ components: [interaction.message.components[1]], embeds: [embed] }); // Force the user to go back
+                    return interaction.update({ components: [interaction.message.components[1]], embeds: [embed], files: [] }); // Force the user to go back
                 }
 
                 const names = [], values = []; // Initialize name & value arrays to use in the chart
@@ -76,11 +77,12 @@ module.exports = {
                     ? `⚠️ *Tu n'as pas ajouté toutes les notes publiées (${student.marks.length}/${publishedMarkCountA}),\nUtilise la commande* ${commandMention(interaction.client, 'notes manquantes')} *pour voir lesquelles.*\n\n`
                     : '';
 
+                file = await averagesChart(names, values, promotionValues, 'type')
                 embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.modules[moduleId]} est de \`${moduleAverages.self}\`${promotionAverages && promotionAverages[unitId][moduleId].self !== null ? ` [promo: \`${promotionAverages[unitId][moduleId].self}\`]` : ''}\net voici le détail par type de note:*`)
-                    .setImage(await averagesChart(names, values, promotionValues, 'type'));
+                    .setImage('attachment://chart.png');
             break;
         }
 
-        interaction.update({ components: [interaction.message.components[1]], embeds: [embed] }); // Keep only the "back" button
+        interaction.update({ components: [interaction.message.components[1]], embeds: [embed], files: file ? [file] : [] }); // Keep only the "back" button
     }
 }

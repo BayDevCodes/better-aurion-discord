@@ -62,12 +62,13 @@ module.exports = {
         /** @type {SelectMenuBuilder} */
         const unitSelectMenu = interaction.client.components.get('chooseUnit').data;
         unitSelectMenu.setPlaceholder('Voir la moyenne d\'une unité en détail');
+        const file = await averagesChart(names, values, promotionValues, 'unité', Object.values(student.goals));
         const averageEmbed = new EmbedBuilder()
             .setColor('Blurple')
             .setTitle('Moyenne générale')
             .setDescription(`${missingMarks}*Ta moyenne générale est de \`${generalAverage}\`${promotionAverages && promotionAverages.general !== null ? ` [promo: \`${promotionAverages.general}\`]` : ''}\net voici le détail par unité d'enseignement:*`)
-            .setImage(await averagesChart(names, values, promotionValues, 'unité', Object.values(student.goals))); // Quickchart API request to shorten the URL
+            .setImage('attachment://chart.png'); // Quickchart API request to shorten the URL
         
-        interaction.editReply({ components: [new ActionRowBuilder().addComponents(unitSelectMenu)], embeds: [averageEmbed] }); // Add the unit select menu
+        interaction.editReply({ components: [new ActionRowBuilder().addComponents(unitSelectMenu)], embeds: [averageEmbed], files: [file] }); // Add the unit select menu
     }
 }

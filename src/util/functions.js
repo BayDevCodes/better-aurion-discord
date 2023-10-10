@@ -1,5 +1,5 @@
 // Third-party modules
-const { AutocompleteInteraction, Client, Collection, User } = require('discord.js'); // Classes from the discord.js library
+const { AttachmentBuilder, AutocompleteInteraction, Client, Collection, User } = require('discord.js'); // Classes from the discord.js library
 const Gradient = require('javascript-color-gradient'); // Library to generate gradients
 const QuickChart = require('quickchart-js'); // Library to generate charts
 const { readdirSync } = require('fs'); // Function to read the content of a directory
@@ -14,7 +14,7 @@ const marks = require('../constants/marks.json'); // Constants regarding the mar
  * @param {Number[]} promotionValues array of promotion average values
  * @param {String} scope scope of the averages (unit, module or type)
  * @param {Number[]} goals array of goals set by the student in unit scope
- * @returns {Promise<String>} chart URL
+ * @returns {Promise<AttachmentBuilder>} chart URL
  */
 async function averagesChart(names, values, promotionValues, scope, goals = []) {
     const chart = new QuickChart(); // Create a new chart
@@ -144,7 +144,7 @@ async function averagesChart(names, values, promotionValues, scope, goals = []) 
         }
     });
 
-    return await chart.getShortUrl(); // Return the chart's URL (promised because we need to shrink it)
+    return new AttachmentBuilder(await chart.toBinary(), { name: 'chart.png' }); // Return the chart's URL (promised because we need to shrink it)
 }
 
 /**

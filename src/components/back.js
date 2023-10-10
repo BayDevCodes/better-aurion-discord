@@ -18,6 +18,7 @@ module.exports = {
         const embed = EmbedBuilder.from(interaction.message.embeds[0]).setColor('Blurple'); // Get the embed from which comes the click
         const [titleStart, moduleName] = embed.data.title.split('\n> '); // Parse the module name, if any
         const unitName = titleStart.split('en ')[1]; // Parse the unit name
+        let file;
 
         // If we are in the module scope
         if (moduleName) {
@@ -81,15 +82,16 @@ module.exports = {
                         : '';
 
                     moduleSelectMenu.setPlaceholder('Voir la moyenne d\'un module en détail');
+                    file = await averagesChart(names, values, promotionValues, 'module');
                     embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par module:*`)
-                        .setImage(await averagesChart(names, values, promotionValues, 'module'));
+                        .setImage('attachment://chart.png');
                 break;
             }
 
             embed.setTitle(titleStart);
             moduleSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(moduleId => new StringSelectMenuOptionBuilder().setLabel(marks.names.modules[moduleId]).setValue(moduleId)));
 
-            return interaction.update({ components: [new ActionRowBuilder().addComponents(moduleSelectMenu)].concat(interaction.message.components), embeds: [embed] }); // Add the module select menu
+            return interaction.update({ components: [new ActionRowBuilder().addComponents(moduleSelectMenu)].concat(interaction.message.components), embeds: [embed], files: file ? [file] : [] }); // Add the module select menu
         }
 
         /** @type {StringSelectMenuBuilder} */
@@ -153,12 +155,13 @@ module.exports = {
                     : '';
 
                 unitSelectMenu.setPlaceholder('Voir la moyenne d\'une unité en détail');
+                file = await averagesChart(names, values, promotionValues, 'unité', Object.values(student.goals));
                 embed.setTitle('Moyenne générale')
                     .setDescription(`${missingMarks}*Ta moyenne générale est de \`${student.averages.general}\`${promotionAverages && promotionAverages.general !== null ? ` [promo: \`${promotionAverages.general}\`]` : ''}\net voici le détail par unité d'enseignement:*`)
-                    .setImage(await averagesChart(names, values, promotionValues, 'unité', Object.values(student.goals)));
+                    .setImage('attachment://chart.png');
             break;
         }
 
-        interaction.update({ components: [new ActionRowBuilder().addComponents(unitSelectMenu)], embeds: [embed] }); // Add the unit select menu
+        interaction.update({ components: [new ActionRowBuilder().addComponents(unitSelectMenu)], embeds: [embed], files: file ? [file] : [] }); // Add the unit select menu
     }
 };

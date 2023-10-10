@@ -15,6 +15,7 @@ module.exports = {
     async execute(interaction) {
         const embed = EmbedBuilder.from(interaction.message.embeds[0]); // Get the embed from which comes the selection
         const unitId = interaction.values[0]; // Get the unit selection
+        let file;
 
         /** @type {StringSelectMenuBuilder} */
         const moduleSelectMenu = interaction.client.components.get('chooseModule').data;
@@ -63,7 +64,7 @@ module.exports = {
                 embed.setTitle(`Moyenne en ${marks.names.units[unitId]}`);
                 if (unitAverages.self === null) {
                     embed.setColor('Orange').setDescription('Tu n\'as pas encore de moyenne pour cette unité...').setImage();
-                    return interaction.update({ components: [new ActionRowBuilder().addComponents(backButton)], embeds: [embed] }); // Force the user to go back
+                    return interaction.update({ components: [new ActionRowBuilder().addComponents(backButton)], embeds: [embed], files: [] }); // Force the user to go back
                 }
 
                 const names = [], values = []; // Initialize name & value arrays to use in the chart
@@ -82,8 +83,9 @@ module.exports = {
                     : '';
 
                 moduleSelectMenu.setPlaceholder('Voir la moyenne d\'un module en détail');
+                file = await averagesChart(names, values, promotionValues, 'module');
                 embed.setDescription(`${missingMarks}*Ta moyenne en ${marks.names.units[unitId]} est de \`${unitAverages.self}\`${promotionAverages && promotionAverages[unitId].self !== null ? ` [promo: \`${promotionAverages[unitId].self}\`]` : ''}\net voici le détail par module:*`)
-                    .setImage(await averagesChart(names, values, promotionValues, 'module'));
+                    .setImage('attachment://chart.png');
             break;
         }
 
@@ -91,6 +93,6 @@ module.exports = {
         moduleSelectMenu.setOptions(Object.keys(marks.weights[unitId]).slice(1).map(moduleId => new StringSelectMenuOptionBuilder().setLabel(marks.names.modules[moduleId]).setValue(moduleId)));
         const rows = [new ActionRowBuilder().addComponents(moduleSelectMenu), new ActionRowBuilder().addComponents(backButton)];
 
-        interaction.update({ components: rows, embeds: [embed] });
+        interaction.update({ components: rows, embeds: [embed], files: file ? [file] : [] });
     }
 }
