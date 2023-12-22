@@ -177,18 +177,18 @@ function calculateAverages(markList) {
    * }}
    */
   const averages = {}; // Initialize the averages object
-  const marksToAccount = markList.filter((m) => m.value >= 0); // Remove marks that are absences
+  const marksToAccount = markList.filter(m => m.value >= 0); // Remove marks that are absences
 
   for (const unitId of Object.keys(marks.weights)) {
-    const unitMarks = marksToAccount.filter((m) => m.id.split('_')[0] === unitId); // Remove marks that are not in the current unit
+    const unitMarks = marksToAccount.filter(m => m.id.split('_')[0] === unitId); // Remove marks that are not in the current unit
     averages[unitId] = {}; // Initialize the unit's averages object
 
     for (const moduleId of Object.keys(marks.weights[unitId]).slice(1)) {
-      const moduleMarks = unitMarks.filter((m) => m.id.split('_')[1] === moduleId); // Remove marks that are not in the current module
+      const moduleMarks = unitMarks.filter(m => m.id.split('_')[1] === moduleId); // Remove marks that are not in the current module
       averages[unitId][moduleId] = {}; // Initialize the module's averages object
 
       for (const typeId of Object.keys(marks.weights[unitId][moduleId]).slice(0, -1)) {
-        const typeMarks = moduleMarks.filter((m) => m.id.split('_')[2] === typeId); // Remove marks that are not of the current type
+        const typeMarks = moduleMarks.filter(m => m.id.split('_')[2] === typeId); // Remove marks that are not of the current type
 
         let markSum = 0; // Initialize the sum of the marks
         for (const mark of typeMarks) markSum += mark.value; // Add the current mark to the sum
@@ -252,7 +252,7 @@ function commandChoices(optionId) {
  */
 function commandMention(client, command) {
   const commandId = client.application.commands.cache.find(
-    (c) => c.name === command.split(' ')[0]
+    c => c.name === command.split(' ')[0]
   )?.id; // Get the command's id
   return `</${command}:${commandId ? commandId : 0}>`; // Return the command mention
 }
@@ -286,10 +286,8 @@ function generateGradient(color, steps) {
   )
     rgb.push(parseInt(color.slice(1 + 2 * i, 3 + 2 * i), 16));
 
-  const lightColor = `#${rgb
-    .map((v) => Math.min(0xff, Math.round(v * 1.3)).toString(16))
-    .join('')}`; // Slighly lighter variation of the color
-  const darkColor = `#${rgb.map((v) => Math.min(0xff, Math.round(v * 0.7)).toString(16)).join('')}`; // Slighly darker variation
+  const lightColor = `#${rgb.map(v => Math.min(0xff, Math.round(v * 1.3)).toString(16)).join('')}`; // Slighly lighter variation of the color
+  const darkColor = `#${rgb.map(v => Math.min(0xff, Math.round(v * 0.7)).toString(16)).join('')}`; // Slighly darker variation
 
   return new Gradient().setColorGradient(lightColor, darkColor).setMidpoint(steps).getColors(); // Generate the gradient and return it
 }
@@ -317,7 +315,7 @@ function handleError(client, error, user = null) {
   const owner =
     client.application.owner instanceof User // Is the application managed by an individual or a team?
       ? client.application.owner
-      : client.application.owner.owner;
+      : client.application.owner.members.find(m => m.id === client.application.owner.ownerId).user;
 
   owner.send(`Erreur détectée${user ? ` avec **${user}**` : ''}:\n\`\`\`js\n${error}\n\`\`\``);
 }
@@ -349,7 +347,7 @@ function nameFromEmail(email) {
   const [firstName, lastName] = email.split('@')[0].split('.'); // Get the first and last names from the email
   const firsts = firstName
     .split('-')
-    .map((f) => f[0].toUpperCase() + f.slice(1))
+    .map(f => f[0].toUpperCase() + f.slice(1))
     .join(' '); // Capitalize the first letters of the first names
   const lasts = lastName.replace('-', ' ').toUpperCase(); // Capitalize the last names
   return `${firsts} ${lasts}`; // Return the formatted name
@@ -404,7 +402,7 @@ function predictMark(student, goal, unitId, moduleId, typeId) {
   const typeGoal = (moduleGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
 
   const marksToAccount = student.marks.filter(
-    (m) => m.value >= 0 && m.id.startsWith(`${unitId}_${moduleId}_${typeId}}`)
+    m => m.value >= 0 && m.id.startsWith(`${unitId}_${moduleId}_${typeId}}`)
   ); // Get the marks to account for the type average
   if (!marksToAccount.length) return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
 
@@ -427,7 +425,7 @@ async function start(client) {
   client.commands = new Collection(); // Initialize the commands collection
 
   // Get all the files in the commands folder
-  readdirSync('./src/commands').forEach((file) => {
+  readdirSync('./src/commands').forEach(file => {
     const command = require(`../commands/${file}`); // Import the command
 
     client.commands.set(command.data.name, command); // Add it to the commands collection
@@ -438,7 +436,7 @@ async function start(client) {
   client.components = new Collection(); // Initialize the components collection
 
   // Get all the files in the components folder
-  readdirSync('./src/components').forEach((file) => {
+  readdirSync('./src/components').forEach(file => {
     const component = require(`../components/${file}`); // Import the component
 
     client.components.set(component.data.data.custom_id, component); // Add it to the components collection
@@ -448,14 +446,12 @@ async function start(client) {
   console.log('\n>>> loading events...');
 
   // Get all the files in the events folder
-  readdirSync('./src/events').forEach((file) => {
+  readdirSync('./src/events').forEach(file => {
     const event = require(`../events/${file}`); // Import the event
 
     // Add a listener to the client for the event
-    if (event.once)
-      client.once(event.name, (...args) =>
-        event.execute(...args)
-      ); // If it is a once event, use client.once
+    if (event.once) client.once(event.name, (...args) => event.execute(...args));
+    // If it is a once event, use client.once
     else client.on(event.name, (...args) => event.execute(...args)); // If it is a normal event, use client.on
     console.log(`${event.name} event loaded!`);
   });
@@ -493,29 +489,29 @@ function weightsChart(unitId = null, moduleId = null) {
     ? marks.colors.types
     : unitId
     ? generateGradient(marks.colors[unitId], Object.keys(marks.weights[unitId]).length - 1)
-    : Object.keys(marks.weights).map((unitId) => marks.colors[unitId]);
+    : Object.keys(marks.weights).map(unitId => marks.colors[unitId]);
 
   // Get the weights of types, modules or units
   const data = moduleId
     ? Object.keys(marks.weights[unitId][moduleId])
         .slice(0, -1)
-        .map((type) => marks.weights[unitId][moduleId][type])
+        .map(type => marks.weights[unitId][moduleId][type])
     : unitId
     ? Object.keys(marks.weights[unitId])
         .slice(1)
-        .map((moduleId) => marks.weights[unitId][moduleId].self)
-    : Object.keys(marks.weights).map((unitId) => marks.weights[unitId].ECTS);
+        .map(moduleId => marks.weights[unitId][moduleId].self)
+    : Object.keys(marks.weights).map(unitId => marks.weights[unitId].ECTS);
 
   // Get the names of types, modules or units
   const labels = moduleId
     ? Object.keys(marks.weights[unitId][moduleId])
         .slice(0, -1)
-        .map((type) => marks.names.types[type])
+        .map(type => marks.names.types[type])
     : unitId
     ? Object.keys(marks.weights[unitId])
         .slice(1)
-        .map((moduleId) => marks.names.modules[moduleId])
-    : Object.keys(marks.weights).map((unitId) => marks.names.units[unitId]);
+        .map(moduleId => marks.names.modules[moduleId])
+    : Object.keys(marks.weights).map(unitId => marks.names.units[unitId]);
 
   const chart = new QuickChart(); // Create a new chart
 
