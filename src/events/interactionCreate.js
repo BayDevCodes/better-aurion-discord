@@ -16,11 +16,13 @@ module.exports = {
       Main.add('interactionCount', 1);
       const command = interaction.client.commands.get(interaction.commandName);
       return command
-        ? command
-            .execute(interaction)
-            .catch((error) =>
-              handleError(interaction.client, error.stack, interaction.user.username)
-            )
+        ? command.execute(interaction).catch(error => {
+            interaction.reply({
+              content: "*Une erreur s'est produite, le développeur a été notifié.*",
+              ephemeral: true,
+            });
+            handleError(interaction.client, error.stack, interaction.user.username);
+          })
         : interaction.reply({ content: "*Cette commande n'est plus supportée.*", ephemeral: true });
     }
 
@@ -29,9 +31,7 @@ module.exports = {
       return component
         ? component
             .execute(interaction)
-            .catch((error) =>
-              handleError(interaction.client, error.stack, interaction.user.username)
-            )
+            .catch(error => handleError(interaction.client, error.stack, interaction.user.username))
         : interaction.reply({ content: "*Ce composant n'est plus supporté.*", ephemeral: true });
     }
   },
