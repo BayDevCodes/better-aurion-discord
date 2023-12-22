@@ -375,7 +375,7 @@ function predictMark(student, goal, unitId, moduleId, typeId) {
   let moduleSum = 0,
     moduleWeights = newModuleWeight; // Initialize the sum and weights of the modules
   for (const [module, average] of Object.entries(student.averages[unitId])) {
-    if (average.self === null || module === moduleId || module === 'self') continue; // Skip the modules with no average, the module with a new mark and the unit average
+    if (average?.self === null || module === moduleId || module === 'self') continue; // Skip the modules with no average, the module with a new mark and the unit average
     const weight = marks.weights[unitId][module].self; // Get the weight of the current module
 
     (moduleSum += average.self * weight), (moduleWeights += weight); // Add the current module to the sum and weights
