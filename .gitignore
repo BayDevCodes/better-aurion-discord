@@ -2,8 +2,9 @@
 node_modules
 package-lock.json
 
-# Credentials
-.env
+# Scripts with credentials
+deploy.sh
+start.sh
 
 # Database generated and updated by the bot
 db.sqlite

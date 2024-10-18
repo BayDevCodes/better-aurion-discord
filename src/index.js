@@ -1,6 +1,5 @@
 // Third-party modules
 const { ActivityType, Client, Options } = require('discord.js'); // Elements from the discord.js library
-require('dotenv').config(); // Function to load the environment variables to the process.env object
 
 // Create a new Discord client instance and prepare it for connection
 require('./util/functions').start(

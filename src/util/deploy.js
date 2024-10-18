@@ -3,7 +3,6 @@ const { REST, Routes } = require('discord.js'); // Elements from the discord.js 
 const { readdirSync } = require('fs'); // Function to read the content of a directory
 
 console.log('>>> Starting...');
-require('dotenv').config(); // Load the environment variables to the process.env object
 
 console.log('\n\n>>> loading commands...');
 const commands = []; // Initialize the commands list
