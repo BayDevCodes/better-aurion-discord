@@ -15,7 +15,7 @@ module.exports = {
     if (interaction.isCommand()) {
       Main.add('interactionCount', 1);
       const command = interaction.client.commands.get(interaction.commandName);
-      return command
+      return command.execute
         ? command.execute(interaction).catch(error => {
             interaction.reply({
               content: "*Une erreur s'est produite, le développeur a été notifié.*",
@@ -28,7 +28,7 @@ module.exports = {
 
     if (interaction.isMessageComponent()) {
       const component = interaction.client.components.get(interaction.customId);
-      return component
+      return component.execute
         ? component.execute(interaction).catch(error => {
             interaction.reply({
               content: "*Une erreur s'est produite, le développeur a été notifié.*",
