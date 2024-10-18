@@ -4,7 +4,7 @@ const { readdirSync } = require('fs'); // Function to read the content of a dire
 
 console.log('>>> Starting...');
 
-console.log('\n\n>>> loading commands...');
+console.log('\n>>> loading commands...');
 const commands = []; // Initialize the commands list
 
 readdirSync('./src/commands').forEach((file) => {
@@ -14,14 +14,14 @@ readdirSync('./src/commands').forEach((file) => {
   console.log(`${command.data.name} slash command ready to deploy!`);
 });
 
-console.log('\n\n>>> deploying commands...');
+console.log('\n>>> deploying commands...');
 const rest = new REST().setToken(process.env.BOT_TOKEN); // Create an HTTP client
 const route = Routes.applicationCommands(process.env.CLIENT_ID); // Set the route to send the commands to Discord's API
 
 // Try to make a request to reupload the application's commands to Discord
 try {
   rest.put(route, { body: commands }).then((data) => {
-    console.log(`\n-> Successfully deployed ${data.length} application commands!\n`);
+    console.log(`-> Successfully deployed ${data.length} application commands!\n`);
     data.forEach((command) => console.log(`- ${command.name} | ${command.id}`)); // Log each sent command with it's id
   });
 } catch {

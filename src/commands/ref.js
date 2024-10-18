@@ -9,39 +9,39 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('ref')
     .setDescription('Commandes utilisables uniquement par un·e référent·e.')
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('publier')
         .setDescription("Permettre l'ajout d'une nouvelle note aux étudiants.")
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('unité')
             .setDescription("Unité d'enseignement concernée par la note.")
             .addChoices(...commandChoices('units'))
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('module')
             .setDescription('Module concerné par la note.')
             .addChoices(...commandChoices('modules'))
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('type')
             .setDescription('Type de la note.')
             .addChoices(...commandChoices('types'))
             .setRequired(true)
         )
-        .addIntegerOption((option) =>
+        .addIntegerOption(option =>
           option
             .setName('numéro')
             .setDescription('Combientième note de ce type?')
             .setMinValue(1)
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('nom')
             .setDescription('Nom arbitraire de la note.')
@@ -49,11 +49,11 @@ module.exports = {
             .setRequired(true)
         )
     )
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('retirer')
         .setDescription('⚠️ Retirer une note et les résultats associés (irréversible).')
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('identifiant')
             .setDescription(
@@ -64,13 +64,13 @@ module.exports = {
             .setRequired(true)
         )
     )
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('supprimer')
         .setDescription(
           "⚠️ Supprimer les données et libérer l'adresse mail associées à un compte Discord (irréversible)."
         )
-        .addUserOption((option) =>
+        .addUserOption(option =>
           option
             .setName('compte')
             .setDescription(
@@ -82,7 +82,7 @@ module.exports = {
 
   /** @param {ChatInputCommandInteraction} interaction */
   async execute(interaction) {
-    if (!(await Main.get('referees'))?.some((r) => r === interaction.user.id)) {
+    if (!(await Main.get('referees'))?.some(r => r === interaction.user.id)) {
       // This command is restricted to the referees who are responsible of accounts & marks
       const restrictedEmbed = new EmbedBuilder()
         .setTitle('Commande restreinte')
@@ -138,7 +138,7 @@ module.exports = {
 
       // Do this for every student in the database
       for (const student of await Promotion.all()) {
-        await Promotion.pull(`${student.id}.marks`, (m) => m.id === markId); // Remove the deleted mark
+        await Promotion.pull(`${student.id}.marks`, m => m.id === markId); // Remove the deleted mark
         Promotion.set(
           `${student.id}.averages`,
           calculateAverages(await Promotion.get(`${student.id}.marks`))

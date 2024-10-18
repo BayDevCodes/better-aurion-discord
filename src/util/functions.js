@@ -5,7 +5,7 @@ const {
   Client,
   Collection,
   User,
-} = require('discord.js'); // Classes from the discord.js library
+} = require('discord.js'); // Elements from the discord.js library
 const Gradient = require('javascript-color-gradient'); // Library to generate gradients
 const QuickChart = require('quickchart-js'); // Library to generate charts
 
@@ -418,7 +418,9 @@ function predictMark(student, goal, unitId, moduleId, typeId) {
  * @param {Client} client Discord.js client
  */
 async function start(client) {
-  console.log('>>> loading commands...');
+  console.log('>>> starting...');
+
+  console.log('\n>>> loading commands...');
   client.commands = new Collection(); // Initialize the commands collection
 
   // Get all the files in the commands folder
@@ -453,14 +455,14 @@ async function start(client) {
     console.log(`${event.name} event loaded!`);
   });
 
-  console.log('\n\n>>> connecting to APIs and websockets...');
+  console.log('\n>>> connecting to APIs and websockets...');
   await client.login(process.env.BOT_TOKEN); // Connect to Discord
   await (await client.application.fetch()).commands.fetch(); // Fetch application information for the commandMention function to work
 
   setInterval(updatePromotionAverages, 1000 * 60 * 10); // Update promotion averages every 10 minutes
   Main.set('promotionAveragesUpdate', ~~((Date.now() + 1000 * 60 * 10) / 1000)); // Save the next update time in seconds
 
-  console.log('\n>>> Loaded and connected!\n');
+  console.log('-> Loaded and connected!\n');
 }
 
 /** Retrieves all the marks of the promotion, calculates the averages and saves them to the database. */

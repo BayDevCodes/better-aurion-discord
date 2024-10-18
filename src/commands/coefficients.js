@@ -27,9 +27,9 @@ module.exports = {
     unitSelectMenu.setPlaceholder("Voir les coefficients d'une unité en détail");
 
     interaction.reply({
-      components: [new ActionRowBuilder().addComponents(unitSelectMenu)],
+      components: [new ActionRowBuilder().addComponents(unitSelectMenu)], // Add the unit select menu
       embeds: [weightsEmbed],
       ephemeral: true,
-    }); // Add the unit select menu
+    });
   },
 };

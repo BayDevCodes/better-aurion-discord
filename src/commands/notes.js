@@ -20,33 +20,33 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('notes')
     .setDescription('Ajouter une de tes notes ou en prévoir une à venir.')
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand.setName('ajoutées').setDescription('Voir les notes que tu as ajoutées.')
     )
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('manquantes')
         .setDescription("Voir les notes publiées que tu n'as pas ajoutées.")
     )
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('prévoir')
         .setDescription('Prévoir une de tes prochaines notes.')
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('unité')
             .setDescription("Unité d'enseignement concernée par la note.")
             .setRequired(true)
             .addChoices(...commandChoices('units'))
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('module')
             .setDescription('Module concerné par la note.')
             .setRequired(true)
             .addChoices(...commandChoices('modules'))
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('type')
             .setDescription('Type de la note.')
@@ -54,11 +54,11 @@ module.exports = {
             .addChoices(...commandChoices('types'))
         )
     )
-    .addSubcommand((subcommand) =>
+    .addSubcommand(subcommand =>
       subcommand
         .setName('saisir')
         .setDescription("Ajouter une de tes notes ou la modifier si elle l'est déjà.")
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('identifiant')
             .setDescription(
@@ -68,7 +68,7 @@ module.exports = {
             .setMaxLength(64) // Prevents the user from entering a too long string
             .setRequired(true)
         )
-        .addNumberOption((option) =>
+        .addNumberOption(option =>
           option
             .setName('résultat')
             .setDescription('Ta note (laisser vide si non noté·e).')
@@ -116,7 +116,7 @@ module.exports = {
           student.marks
             .slice(0, 10)
             .map(
-              async (mark) =>
+              async mark =>
                 `> \`${mark.id}\` *${await Marks.get(mark.id)}* **${
                   mark.value < 0 ? 'non noté·e' : `avec ${mark.value}`
                 }**`
@@ -158,7 +158,7 @@ module.exports = {
         }
 
         const missingMarks = publishedMarks.filter(
-          (publishedMark) => !student.marks.some((mark) => mark.id === publishedMark.id)
+          publishedMark => !student.marks.some(mark => mark.id === publishedMark.id)
         );
         const missingMarksEmbed = new EmbedBuilder()
           .setTitle('Notes manquantes')
@@ -169,7 +169,7 @@ module.exports = {
               'notes saisir'
             )} pour ajouter les notes disponibles suivantes:\n${missingMarks
               .slice(0, 10)
-              .map((missingMark) => `> \`${missingMark.id}\` *${missingMark.value}*`)
+              .map(missingMark => `> \`${missingMark.id}\` *${missingMark.value}*`)
               .join('\n')}`
           )
           .setFooter({
@@ -241,7 +241,7 @@ module.exports = {
           return interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
         }
 
-        const studentMark = student.marks.find((m) => m.id === markIdInput); // Get the student's mark if already added
+        const studentMark = student.marks.find(m => m.id === markIdInput); // Get the student's mark if already added
         const markValue = interaction.options.getNumber('résultat');
         const roundedMark =
           markValue !== null // Is there a value?
@@ -284,7 +284,7 @@ module.exports = {
         interaction.reply({ embeds: [successEmbed], ephemeral: true });
 
         if (studentMark)
-          await Promotion.pull(`${interaction.user.id}.marks`, (m) => m.id === markIdInput); // Remove the original mark if any
+          await Promotion.pull(`${interaction.user.id}.marks`, m => m.id === markIdInput); // Remove the original mark if any
         await Promotion.push(`${interaction.user.id}.marks`, {
           id: markIdInput,
           value: isNaN(roundedMark) ? -1 : roundedMark,

@@ -15,20 +15,20 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('classement')
     .setDescription('Voir les classements de la promo par moyennes/note.')
-    .addSubcommand((subCommand) =>
+    .addSubcommand(subCommand =>
       subCommand
         .setName('moyennes')
         .setDescription(
           'Voir le classement de la promo par moyennes (étudiant·e·s ayant saisi toutes les notes uniquement).'
         )
     )
-    .addSubcommand((subCommand) =>
+    .addSubcommand(subCommand =>
       subCommand
         .setName('note')
         .setDescription(
           'Voir le classement de la promo pour une note (étudiant·e·s ayant saisi cette note uniquement).'
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('identifiant')
             .setDescription(
@@ -63,7 +63,7 @@ module.exports = {
 
       // These rankings contains students with all published marks added and having a general average
       const rankings = (await Promotion.all())
-        .filter((s) => s.value.marks.length === publishedMarkCount)
+        .filter(s => s.value.marks.length === publishedMarkCount)
         .sort((a, b) => b.value.averages.general - a.value.averages.general);
       if (rankings.length === 0) {
         const noStudentsEmbed = new EmbedBuilder()
@@ -79,7 +79,7 @@ module.exports = {
         return interaction.reply({ embeds: [noStudentsEmbed], ephemeral: true });
       }
 
-      const studentRank = rankings.findIndex((s) => s.id === interaction.user.id) + 1;
+      const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
       let description = studentRank // This is equal to 0 if the student is not part of the rankings
         ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${
             student.averages.general
@@ -141,11 +141,11 @@ module.exports = {
 
     // These rankings contains students with a value for this mark
     const rankings = (await Promotion.all())
-      .filter((s) => s.value.marks.some((m) => m.id === markId && m.value >= 0))
+      .filter(s => s.value.marks.some(m => m.id === markId && m.value >= 0))
       .sort(
         (a, b) =>
-          b.value.marks.find((m) => m.id === markId).value -
-          a.value.marks.find((m) => m.id === markId).value
+          b.value.marks.find(m => m.id === markId).value -
+          a.value.marks.find(m => m.id === markId).value
       );
     if (rankings.length === 0) {
       const noStudentsEmbed = new EmbedBuilder()
@@ -161,12 +161,12 @@ module.exports = {
       return interaction.reply({ embeds: [noStudentsEmbed], ephemeral: true });
     }
 
-    const studentRank = rankings.findIndex((s) => s.id === interaction.user.id) + 1;
+    const studentRank = rankings.findIndex(s => s.id === interaction.user.id) + 1;
     let description = studentRank // This is equal to 0 if the student is not part of the rankings
       ? `Tu es à la ${studentRank}è${studentRank === 1 ? 're' : 'me'} place avec \`${
-          student.marks.find((m) => m.id === markId).value
+          student.marks.find(m => m.id === markId).value
         }\`\n`
-      : (await Promotion.get(interaction.user.id)).marks.some((m) => m.id === markId) // Check if the student has added this mark
+      : (await Promotion.get(interaction.user.id)).marks.some(m => m.id === markId) // Check if the student has added this mark
       ? "*Tu ne fais pas partie du classement car tu n'es pas noté·e*\n"
       : `⚠️ *Tu n'as pas ajouté cette note,\nutilise* ${commandMention(
           interaction.client,
@@ -183,11 +183,11 @@ module.exports = {
         student.value.anonymous
           ? '🕵️ Anonyme'
           : `[${nameFromEmail(student.value.email)}](https://discordapp.com/users/${student.id})`
-      }** avec \`${student.value.marks.find((m) => m.id === markId).value}\`\n`;
+      }** avec \`${student.value.marks.find(m => m.id === markId).value}\`\n`;
     }
 
     let sum = 0;
-    for (const student of rankings) sum += student.value.marks.find((m) => m.id === markId).value;
+    for (const student of rankings) sum += student.value.marks.find(m => m.id === markId).value;
 
     const rankingEmbed = new EmbedBuilder()
       .setColor('Blurple')
