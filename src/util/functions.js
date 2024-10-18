@@ -402,7 +402,7 @@ function predictMark(student, goal, unitId, moduleId, typeId) {
   const typeGoal = (moduleGoal * typeWeights - typeSum) / newTypeWeight; // Calculate the expected type average
 
   const marksToAccount = student.marks.filter(
-    m => m.value >= 0 && m.id.startsWith(`${unitId}_${moduleId}_${typeId}}`)
+    m => m.value >= 0 && m.id.startsWith(`${unitId}_${moduleId}_${typeId}`)
   ); // Get the marks to account for the type average
   if (!marksToAccount.length) return Math.round(typeGoal * 100) / 100; // If there are no marks to account for, return the expected type average
 
