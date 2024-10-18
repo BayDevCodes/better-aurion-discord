@@ -278,6 +278,8 @@ async function findMatches(interaction) {
  * @param {Number} steps amount of modules
  */
 function generateGradient(color, steps) {
+  if (steps === 1) return [color];
+
   const rgb = [];
   for (
     let i = 0;
