@@ -10,7 +10,7 @@
     "start": "bash scripts/start.sh"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
+    "better-sqlite3": "^11.4.0",
     "discord.js": "^14.16.3",
     "javascript-color-gradient": "^2.5.0",
     "quick.db": "^9.1.7",
