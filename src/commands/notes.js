@@ -65,7 +65,7 @@ module.exports = {
               "L'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d'options."
             )
             .setAutocomplete(true)
-            .setMaxLength(64) // Prevents the user from entering a too long string
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
         )
         .addNumberOption(option =>
