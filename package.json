@@ -6,14 +6,13 @@
   "author": "BayDev <hello@baydev.me> (https://baydev.me/)",
   "main": "src/index.js",
   "scripts": {
-    "deploy": "node src/util/deploy.js",
-    "start": "node ."
+    "deploy": "bash scripts/deploy.sh",
+    "start": "bash scripts/start.sh"
   },
   "dependencies": {
-    "better-sqlite3": "^9.2.2",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1",
-    "javascript-color-gradient": "^2.4.4",
+    "better-sqlite3": "^11.3.0",
+    "discord.js": "^14.16.3",
+    "javascript-color-gradient": "^2.5.0",
     "quick.db": "^9.1.7",
     "quickchart-js": "^3.1.3"
   }
