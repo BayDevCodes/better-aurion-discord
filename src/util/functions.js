@@ -281,12 +281,7 @@ function generateGradient(color, steps) {
   if (steps === 1) return [color];
 
   const rgb = [];
-  for (
-    let i = 0;
-    i < 3;
-    i++ // Convert the color to RGB
-  )
-    rgb.push(parseInt(color.slice(1 + 2 * i, 3 + 2 * i), 16));
+  for (let i = 0; i < 3; i++) rgb.push(parseInt(color.slice(1 + 2 * i, 3 + 2 * i), 16)); // Convert the color to RGB
 
   const lightColor = `#${rgb.map(v => Math.min(0xff, Math.round(v * 1.3)).toString(16)).join('')}`; // Slighly lighter variation of the color
   const darkColor = `#${rgb.map(v => Math.min(0xff, Math.round(v * 0.7)).toString(16)).join('')}`; // Slighly darker variation
