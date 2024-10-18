@@ -29,9 +29,13 @@ module.exports = {
     if (interaction.isMessageComponent()) {
       const component = interaction.client.components.get(interaction.customId);
       return component
-        ? component
-            .execute(interaction)
-            .catch(error => handleError(interaction.client, error.stack, interaction.user.username))
+        ? component.execute(interaction).catch(error => {
+            interaction.reply({
+              content: "*Une erreur s'est produite, le développeur a été notifié.*",
+              ephemeral: true,
+            });
+            handleError(interaction.client, error.stack, interaction.user.username);
+          })
         : interaction.reply({ content: "*Ce composant n'est plus supporté.*", ephemeral: true });
     }
   },
