@@ -15,10 +15,10 @@ for (const unitId of units) {
   /** @type {String} */
   const unitName = marks.names.units[unitId];
 
-  builder.addNumberOption((option) =>
+  builder.addNumberOption(option =>
     option
-      .setName(unitName.split(' ')[0].toLowerCase())
-      .setDescription(`Quelle moyenne voudrais-tu avoir en ${unitName}?`)
+      .setName(unitName.replace(/(, )| /g, '_').toLowerCase())
+      .setDescription(`Quelle moyenne voudrais-tu avoir en ${unitName} ?`)
       .setMinValue(10)
       .setMaxValue(20)
   );
@@ -52,7 +52,9 @@ module.exports = {
       /** @type {String} */
       const unitName = marks.names.units[unitId];
       const goal =
-        Math.round(interaction.options.getNumber(unitName.split(' ')[0].toLowerCase()) * 100) / 100; // Round the input value to 2 decimal digits if any
+        Math.round(
+          interaction.options.getNumber(unitName.replace(/(, )| /g, '_').toLowerCase()) * 100
+        ) / 100; // Round the input value to 2 decimal digits if any
 
       description += `> ${unitName}: \`${student.goals[unitId]}\`${
         goal ? ` -> \`${goal}\`` : ''
