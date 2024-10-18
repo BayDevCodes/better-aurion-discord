@@ -241,7 +241,7 @@ function commandChoices(optionId) {
   if (!marks.names[optionId]) throw new Error(`Invalid option ID: ${optionId}`); // Throw an error if the option id is invalid
 
   return Object.entries(marks.names[optionId]).map(([id, name]) => {
-    return { name: name, value: id };
+    return { name: name.substring(name.length - 25), value: id };
   }); // Return the options formatted for the Discord API
 }
 

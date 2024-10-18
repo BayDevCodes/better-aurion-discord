@@ -17,7 +17,12 @@ for (const unitId of units) {
 
   builder.addNumberOption(option =>
     option
-      .setName(unitName.replace(/(, )| /g, '_').toLowerCase())
+      .setName(
+        unitName
+          .substring(unitName.length - 32)
+          .replace(/(, )| /g, '_')
+          .toLowerCase()
+      )
       .setDescription(`Quelle moyenne voudrais-tu avoir en ${unitName} ?`)
       .setMinValue(10)
       .setMaxValue(20)
