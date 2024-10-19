@@ -10,7 +10,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('lier')
     .setDescription(`Lier ton compte Discord à ton adresse mail ${mails.domain}.`)
-    .addStringOption((option) =>
+    .addStringOption(option =>
       option.setName('email').setDescription(`Ton adresse mail ${mails.domain}.`).setRequired(true)
     ),
 
@@ -34,19 +34,31 @@ module.exports = {
       return interaction.reply({ embeds: [unknownEmbed], ephemeral: true });
     }
 
-    const student = (await Promotion.all()).find((s) => s.value.email === email.join('@')); // Get the student in the database, if any
+    let student = await Promotion.get(interaction.user.id);
+    if (student) {
+      const alreadyLinkedEmbed = new EmbedBuilder()
+        .setTitle('Ton compte est déjà lié')
+        .setColor('Orange')
+        .setDescription(
+          `Ton compte est déjà lié à l'adresse \`${
+            student.email
+          }\`\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`
+        );
+
+      return interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
+    }
+
+    student = (await Promotion.all()).find(s => s.value.email === email.join('@')); // Get the student in the database, if any
     if (student) {
       const alreadyLinkedEmbed = new EmbedBuilder()
         .setTitle('Adresse mail déjà utilisée')
         .setColor('Orange')
         .setDescription(
-          student.id === interaction.user.id
-            ? `L'adresse \`${email.join('@')}\` est déjà liée à ton compte 👌`
-            : `L'adresse \`${email.join(
-                '@'
-              )}\` est déjà liée à [un compte](https://discordapp.com/users/${
-                student.id
-              })\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`
+          `L'adresse \`${email.join(
+            '@'
+          )}\` est déjà liée à [un compte](https://discordapp.com/users/${
+            student.id
+          })\n***Si** ce n'est pas toi, utilise* ${commandMention(interaction.client, 'aled')}`
         );
 
       return interaction.reply({ embeds: [alreadyLinkedEmbed], ephemeral: true });
