@@ -323,10 +323,10 @@ function generateGradient(color, steps) {
  * @param {String} unitId id of the unit
  * @param {String} moduleId id of the module
  * @param {String} typeId id of the type
- * @param {Number} number mark number
+ * @param {Number?} number mark number
  */
-function getMarkId(unitId, moduleId, typeId, number) {
-  if (!marks.weights[unitId][moduleId] || !marks.weights[unitId][moduleId][typeId]) return null; // Return null if the mark is invalid
+function getMarkId(unitId, moduleId, typeId, number = null) {
+  if (!marks.weights[unitId] || !marks.weights[unitId][moduleId] || !marks.weights[unitId][moduleId][typeId]) return null; // Return null if the mark is invalid
 
   return `${unitId}_${moduleId}_${typeId}${number ? `_${number}` : ''}`; // Generate the mark's id
 }
