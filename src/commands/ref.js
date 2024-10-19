@@ -135,7 +135,7 @@ module.exports = {
     }
 
     if (subcommand === 'retirer') {
-      const markId = interaction.options.getString('identifiant');
+      const markId = interaction.options.getString('nom');
 
       const markName = await Marks.get(markId); // Get the mark name, if any
       if (!markName) {

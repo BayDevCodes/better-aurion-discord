@@ -235,7 +235,7 @@ module.exports = {
         return interaction.reply({ embeds: [predictionEmbed], ephemeral: true });
 
       case 'saisir':
-        const markIdInput = interaction.options.getString('identifiant');
+        const markIdInput = interaction.options.getString('nom');
         const publishedMark = await Marks.get(markIdInput); // Is the input id in the database?
         if (!publishedMark) {
           const unknownEmbed = new EmbedBuilder()
