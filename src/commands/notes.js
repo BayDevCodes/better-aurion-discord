@@ -17,7 +17,7 @@ const {
 } = require('../util/functions'); // Local functions
 const { Marks, Promotion } = require('../util/tables'); // Database tables
 
-// Export the command's data & execute function
+// Export the command's data, autocomplete & execute function
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('notes')

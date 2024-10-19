@@ -281,7 +281,7 @@ function findPossibleMarkDetails(interaction) {
       if (!unit || !marks.weights[unit]) return [];
 
       return Object.keys(marks.weights[unit])
-        .slice(1)
+        .slice(1) // Ignore the unrelated "ECTS" field
         .map(moduleId => {
           return { name: marks.names.modules[moduleId], value: moduleId };
         })
@@ -293,7 +293,7 @@ function findPossibleMarkDetails(interaction) {
       if (!unit || !marks.weights[unit] || !module || !marks.names.modules[module]) return [];
 
       return Object.keys(marks.weights[unit][module])
-        .slice(0, -1)
+        .slice(0, -1) // Ignore the unrelated "self" field
         .map(typeId => {
           return { name: marks.names.types[typeId], value: typeId };
         })
@@ -326,7 +326,12 @@ function generateGradient(color, steps) {
  * @param {Number?} number mark number
  */
 function getMarkId(unitId, moduleId, typeId, number = null) {
-  if (!marks.weights[unitId] || !marks.weights[unitId][moduleId] || !marks.weights[unitId][moduleId][typeId]) return null; // Return null if the mark is invalid
+  if (
+    !marks.weights[unitId] ||
+    !marks.weights[unitId][moduleId] ||
+    !marks.weights[unitId][moduleId][typeId]
+  )
+    return null; // Return null if the mark is invalid
 
   return `${unitId}_${moduleId}_${typeId}${number ? `_${number}` : ''}`; // Generate the mark's id
 }
