@@ -1,7 +1,17 @@
 // Third-party module
-const { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } = require('discord.js'); // Classes from the discord.js library
+const {
+  AutocompleteInteraction,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} = require('discord.js'); // Elements from the discord.js library
 
-const { calculateAverages, commandChoices, getMarkId } = require('../util/functions'); // Local functions
+const {
+  calculateAverages,
+  findMatchingMarks,
+  findPossibleMarkDetails,
+  getMarkId,
+} = require('../util/functions'); // Local functions
 const { Main, Marks, Promotion } = require('../util/tables'); // Database tables
 
 // Export the command's data & execute function
@@ -17,21 +27,24 @@ module.exports = {
           option
             .setName('unité')
             .setDescription("Unité d'enseignement concernée par la note.")
-            .addChoices(...commandChoices('units'))
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
         )
         .addStringOption(option =>
           option
             .setName('module')
             .setDescription('Module concerné par la note.')
-            .addChoices(...commandChoices('modules'))
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
         )
         .addStringOption(option =>
           option
             .setName('type')
             .setDescription('Type de la note.')
-            .addChoices(...commandChoices('types'))
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
         )
         .addIntegerOption(option =>
@@ -55,10 +68,8 @@ module.exports = {
         .setDescription('⚠️ Retirer une note et les résultats associés (irréversible).')
         .addStringOption(option =>
           option
-            .setName('identifiant')
-            .setDescription(
-              "L'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d'options."
-            )
+            .setName('nom')
+            .setDescription('Commence à taper le nom de la note pour affiner la recherche.')
             .setAutocomplete(true)
             .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
@@ -79,6 +90,13 @@ module.exports = {
             .setRequired(true)
         )
     ),
+
+  /** @param {AutocompleteInteraction} interaction */
+  async autocomplete(interaction) {
+    if (interaction.options.getSubcommand() === 'retirer')
+      interaction.respond(await findMatchingMarks(interaction.options.getFocused()));
+    else interaction.respond(findPossibleMarkDetails(interaction));
+  },
 
   /** @param {ChatInputCommandInteraction} interaction */
   async execute(interaction) {

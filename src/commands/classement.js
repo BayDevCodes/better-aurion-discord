@@ -1,13 +1,14 @@
 // Third-party module
 const {
   ActionRowBuilder,
+  AutocompleteInteraction,
   ChatInputCommandInteraction,
   EmbedBuilder,
   SelectMenuBuilder,
   SlashCommandBuilder,
 } = require('discord.js'); // Elements from the discord.js library
 
-const { commandMention, nameFromEmail } = require('../util/functions'); // Local functions
+const { commandMention, findMatchingMarks, nameFromEmail } = require('../util/functions'); // Local functions
 const { Marks, Promotion } = require('../util/tables'); // Database tables
 
 // Export the command's data & execute function
@@ -30,15 +31,18 @@ module.exports = {
         )
         .addStringOption(option =>
           option
-            .setName('identifiant')
-            .setDescription(
-              "L'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d'options."
-            )
+            .setName('nom')
+            .setDescription('Commence à taper le nom de la note pour affiner la recherche.')
             .setAutocomplete(true)
             .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
         )
     ),
+
+  /** @param {AutocompleteInteraction} interaction */
+  async autocomplete(interaction) {
+    interaction.respond(await findMatchingMarks(interaction.options.getFocused()));
+  },
 
   /** @param {ChatInputCommandInteraction} interaction */
   async execute(interaction) {
@@ -123,7 +127,7 @@ module.exports = {
       }); // Add the unit select menu
     }
 
-    const markId = interaction.options.getString('identifiant');
+    const markId = interaction.options.getString('nom');
     const publishedMark = await Marks.get(markId); // Get the mark name from the database, if any
     if (!publishedMark) {
       const unknownEmbed = new EmbedBuilder()

@@ -234,18 +234,6 @@ function calculateAverages(markList) {
 }
 
 /**
- * Formats valid command options for the Discord API.
- * @param {String} optionId id of the option
- */
-function commandChoices(optionId) {
-  if (!marks.names[optionId]) throw new Error(`Invalid option ID: ${optionId}`); // Throw an error if the option id is invalid
-
-  return Object.entries(marks.names[optionId]).map(([id, name]) => {
-    return { name: name.substring(name.length - 25), value: id };
-  }); // Return the options formatted for the Discord API
-}
-
-/**
  * Generates a command mention to use in embeds.
  * @param {Client} client discord.js client
  * @param {String} command name of the command
@@ -258,18 +246,59 @@ function commandMention(client, command) {
 }
 
 /**
- * Returns published marks that match the input to the user.
- * @param {AutocompleteInteraction} interaction the user input
+ * Returns published marks that match the user input.
+ * @param {string} query
  */
-async function findMatches(interaction) {
-  const matches = [];
-  const inputRegex = new RegExp(interaction.options.getFocused(), 'i'); // Case insensitive search
+async function findMatchingMarks(query) {
+  const inputRegex = new RegExp(query, 'i');
+  return Object.values(await Marks.all())
+    .filter(mark => inputRegex.test(mark.id) | inputRegex.test(mark.value))
+    .map(mark => {
+      return { name: mark.value, value: mark.id };
+    })
+    .slice(-25); // Most recent marks
+}
 
-  for (const mark of Object.values(await Marks.all()))
-    if (inputRegex.test(mark.id) | inputRegex.test(mark.value))
-      matches.push({ name: mark.value, value: mark.id });
+/**
+ * Returns the possible characteristics when creating a mark.
+ * @param {AutocompleteInteraction} interaction
+ */
+function findPossibleMarkDetails(interaction) {
+  const { name, value } = interaction.options.getFocused(true);
+  const inputRegex = new RegExp(value, 'i');
 
-  return interaction.respond(matches.slice(0, 25)); // Discord supports at most 25 suggestions
+  let unit;
+  switch (name) {
+    case 'unité':
+      return Object.keys(marks.weights)
+        .map(unitId => {
+          return { name: marks.names.units[unitId], value: unitId };
+        })
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+
+    case 'module':
+      unit = interaction.options.getString('unité');
+      if (!unit || !marks.weights[unit]) return [];
+
+      return Object.keys(marks.weights[unit])
+        .slice(1)
+        .map(moduleId => {
+          return { name: marks.names.modules[moduleId], value: moduleId };
+        })
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+
+    case 'type':
+      unit = interaction.options.getString('unité');
+      const module = interaction.options.getString('module');
+      if (!unit || !marks.weights[unit] || !module || !marks.names.modules[module]) return [];
+
+      return Object.keys(marks.weights[unit][module])
+        .slice(0, -1)
+        .map(typeId => {
+          return { name: marks.names.types[typeId], value: typeId };
+        })
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+  }
 }
 
 /**
@@ -559,9 +588,9 @@ function weightsChart(unitId = null, moduleId = null) {
 module.exports = {
   averagesChart,
   calculateAverages,
-  commandChoices,
   commandMention,
-  findMatches,
+  findMatchingMarks,
+  findPossibleMarkDetails,
   getMarkId,
   handleError,
   initStudent,

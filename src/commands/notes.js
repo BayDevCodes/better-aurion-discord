@@ -1,6 +1,7 @@
 // Third-party module
 const {
   ActionRowBuilder,
+  AutocompleteInteraction,
   ChatInputCommandInteraction,
   EmbedBuilder,
   SlashCommandBuilder,
@@ -8,8 +9,9 @@ const {
 
 const {
   calculateAverages,
-  commandChoices,
   commandMention,
+  findMatchingMarks,
+  findPossibleMarkDetails,
   getMarkId,
   predictMark,
 } = require('../util/functions'); // Local functions
@@ -36,22 +38,25 @@ module.exports = {
           option
             .setName('unité')
             .setDescription("Unité d'enseignement concernée par la note.")
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
-            .addChoices(...commandChoices('units'))
         )
         .addStringOption(option =>
           option
             .setName('module')
             .setDescription('Module concerné par la note.')
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
-            .addChoices(...commandChoices('modules'))
         )
         .addStringOption(option =>
           option
             .setName('type')
             .setDescription('Type de la note.')
+            .setAutocomplete(true)
+            .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
-            .addChoices(...commandChoices('types'))
         )
     )
     .addSubcommand(subcommand =>
@@ -60,10 +65,8 @@ module.exports = {
         .setDescription("Ajouter une de tes notes ou la modifier si elle l'est déjà.")
         .addStringOption(option =>
           option
-            .setName('identifiant')
-            .setDescription(
-              "L'identifiant de la note (exemple: MATH_M1_CC_1) ou le début de son nom pour une liste d'options."
-            )
+            .setName('nom')
+            .setDescription('Commence à taper le nom de la note pour affiner la recherche.')
             .setAutocomplete(true)
             .setMaxLength(256) // Prevents the user from entering a too long string
             .setRequired(true)
@@ -76,6 +79,13 @@ module.exports = {
             .setMaxValue(20)
         )
     ),
+
+  /** @param {AutocompleteInteraction} interaction */
+  async autocomplete(interaction) {
+    if (interaction.options.getSubcommand() === 'saisir')
+      interaction.respond(await findMatchingMarks(interaction.options.getFocused()));
+    else interaction.respond(findPossibleMarkDetails(interaction));
+  },
 
   /** @param {ChatInputCommandInteraction} interaction */
   async execute(interaction) {

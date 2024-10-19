@@ -10,7 +10,19 @@ module.exports = {
 
   /** @param {Interaction} interaction */
   execute(interaction) {
-    if (interaction.isAutocomplete()) return findMatches(interaction);
+    if (interaction.isAutocomplete()) {
+      const command = interaction.client.commands.get(interaction.commandName);
+      return command.autocomplete
+        ? command.autocomplete(interaction).catch(error => {
+            interaction.respond([
+              { name: "Une erreur s'est produite, le développeur a été notifié.", value: 'error' },
+            ]);
+            handleError(interaction.client, error.stack, interaction.user.username);
+          })
+        : interaction.respond([
+            { name: "Cette autocomplétion n'est plus supportée.", value: 'unsupported' },
+          ]);
+    }
 
     if (interaction.isCommand()) {
       Main.add('interactionCount', 1);
