@@ -274,7 +274,8 @@ function findPossibleMarkDetails(interaction) {
         .map(unitId => {
           return { name: marks.names.units[unitId], value: unitId };
         })
-        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value))
+        .slice(0, 25); // Discord limitation: max 25 options
 
     case 'module':
       unit = interaction.options.getString('unité');
@@ -285,7 +286,8 @@ function findPossibleMarkDetails(interaction) {
         .map(moduleId => {
           return { name: marks.names.modules[moduleId], value: moduleId };
         })
-        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value))
+        .slice(0, 25); // Discord limitation: max 25 options;
 
     case 'type':
       unit = interaction.options.getString('unité');
@@ -297,7 +299,8 @@ function findPossibleMarkDetails(interaction) {
         .map(typeId => {
           return { name: marks.names.types[typeId], value: typeId };
         })
-        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value));
+        .filter(({ name, value }) => inputRegex.test(name) || inputRegex.test(value))
+        .slice(0, 25); // Discord limitation: max 25 options;
   }
 }
 
